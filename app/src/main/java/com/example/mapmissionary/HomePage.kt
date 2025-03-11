@@ -26,6 +26,8 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.PointerIcon
 import androidx.compose.ui.input.pointer.pointerHoverIcon
+import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -34,6 +36,7 @@ import androidx.compose.ui.unit.sp
 fun HomePage(gridRefService: GridRefService) {
     var userInput by remember { mutableStateOf("Cardiff") }
     var listOfLocations by remember { mutableStateOf(listOf<Location>()) }
+    val clipboardManager = LocalClipboardManager.current
 
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -51,38 +54,43 @@ fun HomePage(gridRefService: GridRefService) {
                     }
                 })
 
-        LazyColumn(modifier = Modifier
-            .height(500.dp)
+        LazyColumn(
+            modifier = Modifier
+                .height(500.dp)
         ) {
             itemsIndexed(listOfLocations) { i, location ->
                 Row(
                     modifier = Modifier.padding(10.dp)
                 ) {
                     OutlinedCard(
-                        onClick = { Log.i("custom", "card clicked")}
-                    ) {
-                        Text(
-                            text = location.address.toString(), modifier = Modifier.padding(10.dp)
-                        )
-                    }
-
-                }
+                        onClick = {
+                            if (!location.gridRef.isNullOrBlank()) {
+                                clipboardManager.setText(AnnotatedString(location.gridRef!!))
+                            }
+                        }
+                ) {
+                Text(
+                    text = location.address.toString(), modifier = Modifier.padding(10.dp)
+                )
+            }
 
             }
-        }
 
-        Button(
-            onClick = { listOfLocations = gridRefService.getListOfLocations(userInput) },
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .padding(vertical = 20.dp)
-        ) {
-            Text(
-                "Find",
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Medium,
-                modifier = Modifier.padding(7.dp)
-            )
         }
     }
+
+    Button(
+        onClick = { listOfLocations = gridRefService.getListOfLocations(userInput) },
+        modifier = Modifier
+            .align(Alignment.CenterHorizontally)
+            .padding(vertical = 20.dp)
+    ) {
+        Text(
+            "Find",
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Medium,
+            modifier = Modifier.padding(7.dp)
+        )
+    }
+}
 }
