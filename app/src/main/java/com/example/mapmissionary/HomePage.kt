@@ -14,6 +14,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -32,11 +33,18 @@ fun HomePage(gridRefService: GridRefService) {
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .padding(top = 80.dp)
+                .onFocusChanged { focusState ->
+                    if (!focusState.isFocused) {
+                        listOfLocations = gridRefService.getListOfLocations(userInput)
+                    }
+                }
         )
 
         for (location in listOfLocations) {
-            Row(modifier = Modifier
-                .padding(10.dp)) {
+            Row(
+                modifier = Modifier
+                    .padding(10.dp)
+            ) {
                 Text(
                     text = location.toString(),
                 )
