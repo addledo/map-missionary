@@ -1,3 +1,5 @@
+package com.example.mapmissionary
+
 import android.util.Log
 import org.json.JSONObject
 import java.io.IOException
@@ -6,11 +8,9 @@ import java.net.URL
 import java.util.Scanner
 
 class GridRefService {
-    val maxResults = 10
-
-    fun getGridRef(keyWordsText: String) {
-        val url = constructRequestUrl(keyWordsText)
-        fetchData(url)
+    object ApiConfig {
+        const val BASE_URL = "https://api.geodojo.net/locate/find"
+        const val MAX_RESULTS = 10
     }
 
     fun getListOfLocations(keyWords: String): List<Location> {
@@ -57,7 +57,6 @@ class GridRefService {
         var jsonString = ""
 
         val thread = Thread {
-            Log.i("custom", "Thread started")
             try {
                 val connection: HttpURLConnection = url.openConnection() as HttpURLConnection
                 connection.connectTimeout = 10_000
@@ -85,25 +84,22 @@ class GridRefService {
         thread.start()
         thread.join()
 
-//        Log.i("custom", "Running processJSON with string ${jsonString.take(80)}")
         val locations = processJSON(jsonString)
-        Log.i("custom", "JSON processing complete, result is ${locations.firstOrNull()?.address}")
-        return processJSON(jsonString)
+        return locations
 
     }
 
     private fun constructRequestUrl(keyWords: String): String {
-        val baseUrl = "https://api.geodojo.net/locate/find"
         val locationArgs = keyWords.replace(Regex("\\s+"), "+")
-        val maxResultsArg = "max=$maxResults"
+        val maxResultsArg = "max=${ApiConfig.MAX_RESULTS}"
         val typeArg = "type=grid"
-        val requestUrl = "$baseUrl?q=$locationArgs&$maxResultsArg&$typeArg"
+        val requestUrl = "${ApiConfig.BASE_URL}?q=$locationArgs&$maxResultsArg&$typeArg"
         return requestUrl
     }
 
     private fun processJSON(jsonString: String): List<Location> {
         if (jsonString.isBlank()) {
-            return listOf(Location().apply { gridRef = "No location found" })
+            return listOf(Location())
         }
 
         val resultJsonArray = JSONObject(jsonString).getJSONArray("result")
@@ -111,13 +107,16 @@ class GridRefService {
 
         for (i in 0 until resultJsonArray.length()) {
             val locationObj = resultJsonArray.getJSONObject(i)
-            locations.add(Location().apply {
-                address = locationObj.get("location").toString()
-                gridRef = locationObj.get("grid").toString()
-            })
+            locations.add(
+                Location(
+                    address = locationObj.get("location").toString(),
+                    gridRef = locationObj.get("grid").toString()
+                )
+            )
         }
 
         return locations.toList()
+//        return listOf(Location("foo","bar"))
     }
 
 

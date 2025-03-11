@@ -1,8 +1,7 @@
 package com.example.mapmissionary
 
-import GridRefService
-import Location
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
@@ -22,7 +21,7 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun HomePage(gridRefService: GridRefService) {
     var userInput by remember { mutableStateOf("") }
-    var listOfLocations by remember { mutableStateOf(listOf(Location(), Location())) }
+    var listOfLocations by remember { mutableStateOf(listOf<Location>()) }
 
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -36,16 +35,16 @@ fun HomePage(gridRefService: GridRefService) {
         )
 
         for (location in listOfLocations) {
-            Text(
-                text = location.address + location.gridRef,
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-
-            )
+            Row(modifier = Modifier
+                .padding(10.dp)) {
+                Text(
+                    text = location.toString(),
+                )
+            }
         }
 
         Button(
-            onClick = {listOfLocations = gridRefService.getListOfLocations(userInput)},
+            onClick = { listOfLocations = gridRefService.getListOfLocations(userInput) },
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .padding(100.dp),
