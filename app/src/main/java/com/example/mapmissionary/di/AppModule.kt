@@ -1,6 +1,8 @@
 package com.example.mapmissionary.di
 
 import com.example.mapmissionary.GridRefService
+import com.example.mapmissionary.Location
+import com.example.mapmissionary.SharedViewModel
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -17,5 +19,16 @@ object AppModule {
         return GridRefService()
     }
 
+    @Provides
+    @Singleton
+    fun provideLocation(): Location {
+        return Location()
+    }
+
+    @Provides
+    @Singleton
+    fun provideSharedViewModel(): SharedViewModel {
+        return SharedViewModel()
+    }
 
 }

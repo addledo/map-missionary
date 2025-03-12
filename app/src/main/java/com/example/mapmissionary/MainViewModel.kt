@@ -7,4 +7,4 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor (
     private val gridRefService: GridRefService
-) : ViewModel() { }
+) : ViewModel()

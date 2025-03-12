@@ -71,7 +71,7 @@ dependencies {
     androidTestAnnotationProcessor(libs.hilt.compiler)
     // For local unit tests
     testImplementation(libs.hilt.android.testing)
-    testAnnotationProcessor(libs.hilt.compiler)
+    kapt(libs.hilt.compiler)
 }
 
 // Allow references to generated code

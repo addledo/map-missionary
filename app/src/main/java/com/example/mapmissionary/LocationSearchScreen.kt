@@ -37,14 +37,13 @@ import androidx.navigation.NavController
 
 
 @Composable
-fun HomeScreen(navController: NavController) {
+fun LocationSearchScreen(navController: NavController) {
     val gridRefService = GridRefService()
     val sharedViewModel = hiltViewModel<SharedViewModel>()
 
     var userInput by remember { mutableStateOf("") }
     var listOfLocations by remember { mutableStateOf(listOf<Location>()) }
     val clipboardManager = LocalClipboardManager.current
-//    val viewModel = MainViewModel()
 
     val locationPermissionResultLauncher =
         rememberLauncherForActivityResult(
@@ -77,6 +76,8 @@ fun HomeScreen(navController: NavController) {
                     OutlinedCard(onClick = {
                         if (!location.gridRef.isNullOrBlank()) {
                             clipboardManager.setText(AnnotatedString(location.gridRef!!))
+                            sharedViewModel.updateSelectedLocation(location)
+                            navController.navigate("location_details")
                         }
                     }) {
                         Text(
@@ -99,6 +100,7 @@ fun HomeScreen(navController: NavController) {
                 onClick = {
                     locationPermissionResultLauncher.launch(android.Manifest.permission.ACCESS_FINE_LOCATION)
                     navController.navigate("location_details")
+                    //TODO Implement location
                 },
                 modifier = Modifier
                     .height(50.dp)
@@ -110,7 +112,9 @@ fun HomeScreen(navController: NavController) {
                 )
             }
             Button(
-                onClick = { listOfLocations = gridRefService.getListOfLocations(userInput) },
+                onClick = {
+                    listOfLocations = gridRefService.getListOfLocations(userInput)
+                },
                 modifier = Modifier
                     .height(50.dp)
                     .width(110.dp)
@@ -119,7 +123,6 @@ fun HomeScreen(navController: NavController) {
                     "Find",
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Medium,
-//                    modifier = Modifier.padding(7.dp)
                 )
             }
         }
