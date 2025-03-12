@@ -84,7 +84,6 @@ class GridRefService {
         }
 
         return locations.toList()
-//        return listOf(Location("foo","bar"))
     }
 
 
