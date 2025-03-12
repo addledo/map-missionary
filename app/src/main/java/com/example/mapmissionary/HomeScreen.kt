@@ -1,9 +1,7 @@
 package com.example.mapmissionary
 
 import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -29,29 +27,27 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 
-private val viewModel = MainViewModel()
 
 @Composable
-fun HomePage(gridRefService: GridRefService) {
+fun HomeScreen(navController: NavController) {
+    val gridRefService = GridRefService()
     var userInput by remember { mutableStateOf("") }
     var listOfLocations by remember { mutableStateOf(listOf<Location>()) }
     val clipboardManager = LocalClipboardManager.current
-    val viewModel = MainViewModel()
-    val dialogueQueue = viewModel.visiblePermissionDialogueQueue
-    val locationPermissionResultLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestPermission(),
-        onResult = { isGranted ->
-            viewModel.onPermissionResult(
-                permission = android.Manifest.permission.ACCESS_FINE_LOCATION, isGranted = isGranted
-            )
-        })
+//    val viewModel = MainViewModel()
+
+    val locationPermissionResultLauncher =
+        rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.RequestPermission(),
+            onResult = {}
+        )
 
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -71,7 +67,7 @@ fun HomePage(gridRefService: GridRefService) {
         LazyColumn(
             modifier = Modifier.height(500.dp)
         ) {
-            itemsIndexed(listOfLocations) { i, location ->
+            itemsIndexed(listOfLocations) { _, location ->
                 Row(
                     modifier = Modifier.padding(10.dp)
                 ) {
@@ -81,7 +77,7 @@ fun HomePage(gridRefService: GridRefService) {
                         }
                     }) {
                         Text(
-                            text = location.address.toString(), modifier = Modifier.padding(10.dp)
+                            text = location.toString(), modifier = Modifier.padding(10.dp)
                         )
                     }
 
@@ -97,7 +93,9 @@ fun HomePage(gridRefService: GridRefService) {
                 .padding(horizontal = 10.dp)
         ) {
             Button(
-                onClick = { locationPermissionResultLauncher.launch(android.Manifest.permission.ACCESS_FINE_LOCATION) },
+                onClick = { locationPermissionResultLauncher.launch(android.Manifest.permission.ACCESS_FINE_LOCATION)
+                          navController.navigate("location_details")
+                          },
                 modifier = Modifier
                     .height(50.dp)
                     .width(110.dp)
