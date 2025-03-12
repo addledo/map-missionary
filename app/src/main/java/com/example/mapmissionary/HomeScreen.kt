@@ -32,12 +32,15 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 
 
 @Composable
 fun HomeScreen(navController: NavController) {
     val gridRefService = GridRefService()
+    val sharedViewModel = hiltViewModel<SharedViewModel>()
+
     var userInput by remember { mutableStateOf("") }
     var listOfLocations by remember { mutableStateOf(listOf<Location>()) }
     val clipboardManager = LocalClipboardManager.current
@@ -93,9 +96,10 @@ fun HomeScreen(navController: NavController) {
                 .padding(horizontal = 10.dp)
         ) {
             Button(
-                onClick = { locationPermissionResultLauncher.launch(android.Manifest.permission.ACCESS_FINE_LOCATION)
-                          navController.navigate("location_details")
-                          },
+                onClick = {
+                    locationPermissionResultLauncher.launch(android.Manifest.permission.ACCESS_FINE_LOCATION)
+                    navController.navigate("location_details")
+                },
                 modifier = Modifier
                     .height(50.dp)
                     .width(110.dp)
