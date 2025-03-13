@@ -1,8 +1,10 @@
 package com.example.mapmissionary
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedCard
@@ -42,6 +44,7 @@ fun LocationDetailsScreen(navController: NavController?) {
         CardTitle("Coordinates")
         DetailCard(sharedViewModel.selectedLocation.coordinates ?: "Not found")
 
+        Spacer(modifier = Modifier.weight(1F))
 
         BackButton(navController)
     }
@@ -67,17 +70,14 @@ fun DetailCard(content: String) {
     OutlinedCard(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 6.dp),
-        onClick = {
-            //TODO Copy contents to clipboard
-            clipboardManager.setText(AnnotatedString(content))
-        }
+            .padding(vertical = 7.dp),
+        onClick = { clipboardManager.setText(AnnotatedString(content)) }
     ) {
         Text(
             text = content,
             fontSize = 20.sp,
             modifier = Modifier
-                .padding(8.dp)
+                .padding(12.dp)
 
         )
     }
@@ -102,11 +102,17 @@ fun BackButton(navController: NavController?) {
         onClick = { navController?.popBackStack() },
         modifier = Modifier
             .fillMaxWidth()
+            .padding(bottom = 20.dp)
+            .padding(horizontal = 10.dp)
+            .height(50.dp)
     ) {
-        Text(text = "Go back")
+        Text(
+            text = "Go back",
+            fontSize = 20.sp
+        )
     }
-
 }
+
 
 @Preview(showBackground = true)
 @Composable
@@ -130,6 +136,7 @@ private fun ScreenPreview() {
         CardTitle("Coordinates")
         DetailCard("No location")
 
+        Spacer(modifier = Modifier.weight(1F))
 
         BackButton(null)
     }
