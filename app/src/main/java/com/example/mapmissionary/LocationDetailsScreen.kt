@@ -111,5 +111,26 @@ fun BackButton(navController: NavController?) {
 @Preview(showBackground = true)
 @Composable
 private fun ScreenPreview() {
-    LocationDetailsScreen(null)
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(
+                horizontal = 20.dp,
+                vertical = 20.dp
+            )
+    ) {
+        ScreenTitle("Location")
+
+        CardTitle("Address")
+        DetailCard("No location")
+
+        CardTitle("Grid Reference")
+        DetailCard("No location")
+
+        CardTitle("Coordinates")
+        DetailCard("No location")
+
+
+        BackButton(null)
+    }
 }
