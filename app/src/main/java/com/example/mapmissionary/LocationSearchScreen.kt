@@ -20,7 +20,6 @@ import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -42,10 +41,6 @@ import kotlinx.coroutines.launch
 @Composable
 fun LocationSearchScreen(navController: NavController) {
     val sharedViewModel = hiltViewModel<SharedViewModel>()
-
-    // Is this clunky? Should it be injected directly?
-    // Perhaps write a function in the shared view model so the gridRefService isn't needed?
-    val gridRefService = sharedViewModel.gridRefService
 
     var userInput by remember { mutableStateOf("") }
     val clipboardManager = LocalClipboardManager.current
@@ -130,7 +125,7 @@ fun LocationSearchScreen(navController: NavController) {
 //                        listOfLocations = gridRefService.getListOfLocations(userInput)
 //                    }
                     coroutineScope.launch {
-                        listOfLocations = gridRefService.getListOfLocations(userInput)
+                        listOfLocations = sharedViewModel.searchLocations(userInput)
                     }
                 },
                 modifier = Modifier
