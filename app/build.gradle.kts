@@ -61,6 +61,7 @@ dependencies {
     implementation(libs.accompanist.permissions)
     implementation(libs.lifecycle.viewmodel.compose.android)
     implementation(libs.androidx.navigation.compose)
+    implementation(libs.kotlinx.coroutines.play.services)
 
     // Dagger - Hilt
     implementation(libs.hilt.android)

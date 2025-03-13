@@ -19,8 +19,6 @@ class MainActivity : ComponentActivity() {
         setContent {
             MapMissionaryTheme {
                 AppNavigation()
-//                val sharedViewModel = hiltViewModel<SharedViewModel>()
-//                Text(text = sharedViewModel.selectedLocation.address ?: "none")
             }
         }
     }

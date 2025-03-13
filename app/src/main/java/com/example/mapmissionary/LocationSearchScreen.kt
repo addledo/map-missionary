@@ -1,5 +1,6 @@
 package com.example.mapmissionary
 
+import android.content.Context
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
@@ -74,8 +75,18 @@ fun LocationSearchScreen(navController: NavController?) {
         ) {
             CurrentLocationButton {
                 locationPermissionResultLauncher.launch(android.Manifest.permission.ACCESS_FINE_LOCATION)
-                navController?.navigate("location_details")
-                //TODO Implement location
+
+                if (viewModel.hasLocationPermission()) {
+                    sharedViewModel.updateSelectedLocation(
+                        Location(
+                            address = "loading...",
+                            gridRef = "loading...",
+                            coordinates = "loading...",
+                        )
+                    )
+                    navController?.navigate("location_details")
+                    viewModel.fetchAndUpdateLocation(sharedViewModel)
+                }
             }
             FindButton {
                 coroutineScope.launch {

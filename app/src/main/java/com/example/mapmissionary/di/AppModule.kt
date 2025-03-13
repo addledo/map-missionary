@@ -1,13 +1,16 @@
 package com.example.mapmissionary.di
 
+import android.content.Context
 import com.example.mapmissionary.GridRefService
 import com.example.mapmissionary.Location
+import com.example.mapmissionary.LocationHandler
 import com.example.mapmissionary.LocationSearchViewModel
 import com.example.mapmissionary.SharedViewModel
 import com.example.mapmissionary.NetworkRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
@@ -41,8 +44,13 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideLocationSearchViewModel(): LocationSearchViewModel {
-        return LocationSearchViewModel()
+    fun provideLocationSearchViewModel(locationHandler: LocationHandler): LocationSearchViewModel {
+        return LocationSearchViewModel(locationHandler)
     }
 
+    @Provides
+    @Singleton
+    fun provideLocationHandler(@ApplicationContext context: Context): LocationHandler {
+        return LocationHandler(context)
+    }
 }
