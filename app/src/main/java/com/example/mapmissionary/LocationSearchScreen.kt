@@ -26,7 +26,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -35,13 +35,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import kotlinx.coroutines.launch
 
-
 @Composable
 fun LocationSearchScreen(navController: NavController?) {
     val sharedViewModel = hiltViewModel<SharedViewModel>()
     val viewModel = hiltViewModel<LocationSearchViewModel>()
 
-    var userInput by remember { mutableStateOf("plas y brenin") }
+    var userInput by remember { mutableStateOf("Cardiff") }
 
     //TODO Do more research on scope and best way to implement this
     val coroutineScope = rememberCoroutineScope()
@@ -50,29 +49,27 @@ fun LocationSearchScreen(navController: NavController?) {
         contract = ActivityResultContracts.RequestPermission(),
         onResult = {})
 
-
     Column(modifier = Modifier.fillMaxSize()) {
+
         UserInputBox(userInput) { userInput = it }
 
-        LazyColumn(
-            modifier = Modifier.height(500.dp)
-        ) {
-            itemsIndexed(viewModel.locations) { _, location ->
-                Row(
-                    modifier = Modifier.padding(10.dp)
-                ) {
-                    LocationCard(location) {
-                        navController?.navigate("location_details")
-                    }
-                }
-            }
+        LocationResultsLazyColumn(
+            viewModel.locations,
+            Modifier
+                .weight(1F)
+                .fillMaxWidth()
+                .padding(horizontal = 30.dp)
+        ) { location ->
+            sharedViewModel.updateSelectedLocation(location)
+            navController?.navigate("location_details")
         }
 
         Row(
             horizontalArrangement = Arrangement.SpaceAround,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 10.dp)
+                .padding(bottom = 40.dp)
+                .padding(top = 30.dp)
         ) {
             CurrentLocationButton {
                 locationPermissionResultLauncher.launch(android.Manifest.permission.ACCESS_FINE_LOCATION)
@@ -86,40 +83,55 @@ fun LocationSearchScreen(navController: NavController?) {
             }
         }
     }
-
-
 }
 
 
-
-
-
-
-
 @Composable
-fun LocationCard(location: Location, onClick: () -> Unit) {
-    OutlinedCard(onClick = onClick) {
+fun LocationCard(location: Location, onLocationSelected: (Location) -> Unit) {
+    OutlinedCard(
+        onClick = { onLocationSelected(location) },
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 10.dp)
+
+    ) {
         Text(
-            text = location.toString(), modifier = Modifier.padding(10.dp)
+            text = location.toString(), fontSize = 18.sp, modifier = Modifier.padding(15.dp)
         )
     }
 
 }
 
 @Composable
-fun LocationResultsDisplay() {
-    TODO("Not yet implemented")
+fun LocationResultsLazyColumn(
+    locations: List<Location>, modifier: Modifier, onLocationSelected: (Location) -> Unit
+) {
+    LazyColumn(
+        modifier = modifier
+    ) {
+        itemsIndexed(locations) { _, location ->
+            Row(
+                modifier = Modifier
+            ) {
+                LocationCard(location, onLocationSelected)
+            }
+        }
+    }
 }
 
 @Composable
 fun UserInputBox(userInput: String, onValueChange: (String) -> Unit) {
     TextField(
         value = userInput,
+        textStyle = TextStyle(fontSize = 20.sp),
         onValueChange = onValueChange,
         label = { Text("Enter location name:") },
         modifier = Modifier
-            .padding(20.dp)
+            .padding(25.dp)
+            .padding(bottom = 10.dp)
             .fillMaxWidth()
+//            .height(80.dp)
+
     )
 }
 
@@ -156,9 +168,27 @@ fun FindButton(onClick: () -> Unit = {}) {
 @Preview(showBackground = true)
 @Composable
 fun LocationSearchScreenPrev() {
-    Column {
-        CurrentLocationButton()
-        FindButton()
+    Column(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        UserInputBox("Plas y Brenin") {}
+        LocationResultsLazyColumn(
+            listOf(Location(), Location()),
+            Modifier
+                .weight(1F)
+                .fillMaxWidth()
+                .padding(horizontal = 30.dp)
+        ) {}
 
+        Row(
+            horizontalArrangement = Arrangement.SpaceAround,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 40.dp)
+                .padding(top = 10.dp)
+        ) {
+            CurrentLocationButton { }
+            FindButton { }
+        }
     }
 }
