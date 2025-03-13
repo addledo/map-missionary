@@ -41,12 +41,11 @@ import kotlinx.coroutines.launch
 @Composable
 fun LocationSearchScreen(navController: NavController) {
     val sharedViewModel = hiltViewModel<SharedViewModel>()
+    val viewModel = hiltViewModel<LocationSearchViewModel>()
 
     var userInput by remember { mutableStateOf("") }
     val clipboardManager = LocalClipboardManager.current
 
-    //TODO Move this to a view model?
-    var listOfLocations by remember { mutableStateOf(listOf<Location>()) }
 
     //TODO Do more research on scope and best way to implement this
     val coroutineScope = rememberCoroutineScope()
@@ -76,7 +75,7 @@ fun LocationSearchScreen(navController: NavController) {
         LazyColumn(
             modifier = Modifier.height(500.dp)
         ) {
-            itemsIndexed(listOfLocations) { _, location ->
+            itemsIndexed(viewModel.locations) { _, location ->
                 Row(
                     modifier = Modifier.padding(10.dp)
                 ) {
@@ -125,7 +124,7 @@ fun LocationSearchScreen(navController: NavController) {
 //                        listOfLocations = gridRefService.getListOfLocations(userInput)
 //                    }
                     coroutineScope.launch {
-                        listOfLocations = sharedViewModel.searchLocations(userInput)
+                        viewModel.updateLocations(sharedViewModel.searchLocations(userInput))
                     }
                 },
                 modifier = Modifier

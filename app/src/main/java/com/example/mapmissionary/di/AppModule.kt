@@ -2,6 +2,7 @@ package com.example.mapmissionary.di
 
 import com.example.mapmissionary.GridRefService
 import com.example.mapmissionary.Location
+import com.example.mapmissionary.LocationSearchViewModel
 import com.example.mapmissionary.SharedViewModel
 import com.example.mapmissionary.NetworkRepository
 import dagger.Module
@@ -36,6 +37,12 @@ object AppModule {
     @Singleton
     fun provideSharedViewModel(gridRefService: GridRefService): SharedViewModel {
         return SharedViewModel(gridRefService)
+    }
+
+    @Provides
+    @Singleton
+    fun provideLocationSearchViewModel(): LocationSearchViewModel {
+        return LocationSearchViewModel()
     }
 
 }
