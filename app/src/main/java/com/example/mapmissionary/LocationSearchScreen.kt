@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import kotlinx.coroutines.internal.SynchronizedObject
 import kotlinx.coroutines.launch
 
 @Composable
@@ -96,10 +97,21 @@ fun LocationCard(location: Location, onLocationSelected: (Location) -> Unit) {
 
     ) {
         Text(
-            text = location.toString(), fontSize = 18.sp, modifier = Modifier.padding(15.dp)
+            text = formatLocationCardText(location),
+            fontSize = 18.sp,
+            modifier = Modifier
+                .padding(15.dp)
         )
     }
+}
 
+fun formatLocationCardText(location: Location): String {
+    val newLine = System.lineSeparator()
+    val builder = StringBuilder()
+    builder.append(location.address ?: "Address not found")
+    builder.append(newLine)
+    builder.append(location.gridRef ?: "Grid reference not found")
+    return builder.toString()
 }
 
 @Composable
@@ -130,8 +142,6 @@ fun UserInputBox(userInput: String, onValueChange: (String) -> Unit) {
             .padding(25.dp)
             .padding(bottom = 10.dp)
             .fillMaxWidth()
-//            .height(80.dp)
-
     )
 }
 
