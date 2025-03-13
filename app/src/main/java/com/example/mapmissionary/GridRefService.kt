@@ -2,66 +2,32 @@ package com.example.mapmissionary
 
 import android.util.Log
 import org.json.JSONObject
-import java.io.IOException
-import java.net.HttpURLConnection
-import java.net.URL
-import java.util.Scanner
+import javax.inject.Inject
 
-class GridRefService {
+//  TODO add another API call to get more data
+//  https://api.geodojo.net/locate/region?q=SJ4013267361&type[]=major-town-city&type[]=police-force-area&type[]=county-unitary-authority
+//  https://api.geodojo.net/locate/nearest?q=SH8105953509&&type[]=police-force-area&type[]=county-unitary-authority&type[]=postcode-centre
+
+class GridRefService @Inject constructor(private val networkRepository: NetworkRepository) {
     object ApiConfig {
         const val BASE_URL = "https://api.geodojo.net/locate/find"
         const val MAX_RESULTS = 10
     }
 
-    fun getListOfLocations(keyWords: String): List<Location> {
+    suspend fun getListOfLocations(keyWords: String): List<Location> {
         val validatedKeyWords = PostcodeValidator.validate(keyWords)
         val url = constructRequestUrl(validatedKeyWords)
-        return fetchData(url)
+        val locationsJSON = networkRepository.fetchData(url)
+        return processJSON(locationsJSON)
     }
 
-
-    private fun fetchData(urlString: String): List<Location> {
-        val url = URL(urlString)
-        var jsonString = ""
-
-        val thread = Thread {
-            try {
-                val connection: HttpURLConnection = url.openConnection() as HttpURLConnection
-                connection.connectTimeout = 10_000
-                connection.readTimeout = 10_000
-                connection.connect()
-
-                val responseCode = connection.responseCode
-                if (responseCode == HttpURLConnection.HTTP_OK) {
-                    val scanner = Scanner(connection.inputStream).useDelimiter("\\A")
-                    jsonString = if (scanner.hasNext()) scanner.next() else "Scanner empty"
-                    Log.i(
-                        "custom",
-                        "HTTP Connection successful, json string is ${jsonString.take(80)}"
-                    )
-                } else {
-                    Log.w("custom", "Connection failed. HTTP Response code $responseCode")
-                }
-
-
-            } catch (e: IOException) {
-                println(e)
-                Log.e("custom", "ERROR: $e")
-            }
-        }
-        thread.start()
-        thread.join()
-
-        val locations = processJSON(jsonString)
-        return locations
-
-    }
 
     private fun constructRequestUrl(keyWords: String): String {
         val locationArgs = keyWords.replace(Regex("\\s+"), "+")
         val maxResultsArg = "max=${ApiConfig.MAX_RESULTS}"
         val typeArg = "type=grid"
         val requestUrl = "${ApiConfig.BASE_URL}?q=$locationArgs&$maxResultsArg&$typeArg"
+        Log.i("data", requestUrl)
         return requestUrl
     }
 

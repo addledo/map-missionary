@@ -9,6 +9,8 @@ import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -24,25 +26,27 @@ fun LocationDetailsScreen(navController: NavController?) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = 20.dp,
-                vertical = 20.dp)
+            .padding(
+                horizontal = 20.dp,
+                vertical = 20.dp
+            )
     ) {
         ScreenTitle("Location")
 
         CardTitle("Address")
-        DetailCard(sharedViewModel.selectedLocation.address ?: "No location selected")
+        DetailCard(sharedViewModel.selectedLocation.address ?: "Not found")
 
         CardTitle("Grid Reference")
-        DetailCard(sharedViewModel.selectedLocation.gridRef ?: "No location selected")
+        DetailCard(sharedViewModel.selectedLocation.gridRef ?: "Not found")
 
         CardTitle("Coordinates")
-        DetailCard(sharedViewModel.selectedLocation.coordinates ?: "No location selected")
+        DetailCard(sharedViewModel.selectedLocation.coordinates ?: "Not found")
 
 
         BackButton(navController)
     }
 
-    }
+}
 
 
 @Composable
@@ -58,12 +62,15 @@ fun CardTitle(title: String) {
 
 @Composable
 fun DetailCard(content: String) {
+    //TODO Move clipboard manager instance
+    val clipboardManager = LocalClipboardManager.current
     OutlinedCard(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 6.dp),
         onClick = {
             //TODO Copy contents to clipboard
+            clipboardManager.setText(AnnotatedString(content))
         }
     ) {
         Text(
@@ -92,7 +99,7 @@ fun ScreenTitle(text: String) {
 @Composable
 fun BackButton(navController: NavController?) {
     Button(
-        onClick = { navController?.popBackStack()},
+        onClick = { navController?.popBackStack() },
         modifier = Modifier
             .fillMaxWidth()
     ) {
