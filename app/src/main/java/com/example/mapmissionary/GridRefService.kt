@@ -10,28 +10,46 @@ import javax.inject.Inject
 
 class GridRefService @Inject constructor(private val networkRepository: NetworkRepository) {
     object ApiConfig {
-        const val BASE_URL = "https://api.geodojo.net/locate/find"
+        const val SEARCH_BASE_URL = "https://api.geodojo.net/locate/find"
+        const val GRID_BASE_URL = "https://api.geodojo.net/locate/grid?type=grid&q="
+
         const val MAX_RESULTS = 10
     }
 
-    suspend fun getListOfLocations(keyWords: String): List<Location> {
+    suspend fun searchLocationsByKeywords(keyWords: String): List<Location> {
         val validatedKeyWords = PostcodeValidator.validate(keyWords)
-        val url = constructRequestUrl(validatedKeyWords)
+        val url = constructSearchRequestUrl(validatedKeyWords)
         val locationsJSON = networkRepository.fetchData(url)
-        return processJSON(locationsJSON)
+        return processSearchJSON(locationsJSON)
+    }
+
+    suspend fun getGridFromCoordinates(coordinateString: String?): String {
+        if (coordinateString == null) {
+            return "Not found"
+        }
+        val url = ApiConfig.GRID_BASE_URL + formatCoordinateStringForApi(coordinateString)
+        Log.i("url", url)
+        val resultJSON = networkRepository.fetchData(url)
+        return processGridJSON(resultJSON)
     }
 
 
-    private fun constructRequestUrl(keyWords: String): String {
+    fun formatCoordinateStringForApi(coordinateString: String): String {
+        val formattedString = coordinateString.replace(", ", "+")
+        Log.i("formatting", "Coordinates formatted to $formattedString")
+        return formattedString
+    }
+
+    private fun constructSearchRequestUrl(keyWords: String): String {
         val locationArgs = keyWords.replace(Regex("\\s+"), "+")
         val maxResultsArg = "max=${ApiConfig.MAX_RESULTS}"
         val typeArg = "type=grid"
-        val requestUrl = "${ApiConfig.BASE_URL}?q=$locationArgs&$maxResultsArg&$typeArg"
-        Log.i("data", requestUrl)
+        val requestUrl = "${ApiConfig.SEARCH_BASE_URL}?q=$locationArgs&$maxResultsArg&$typeArg"
+        Log.i("url", requestUrl)
         return requestUrl
     }
 
-    private fun processJSON(jsonString: String): List<Location> {
+    private fun processSearchJSON(jsonString: String): List<Location> {
         if (jsonString.isBlank()) {
             return listOf(Location())
         }
@@ -48,8 +66,18 @@ class GridRefService @Inject constructor(private val networkRepository: NetworkR
                 )
             )
         }
-
         return locations.toList()
+    }
+
+    private fun processGridJSON(jsonString: String): String {
+        if (jsonString.isBlank()) {
+            return "Not found"
+        }
+
+        // TODO Add try / catch
+        val resultJsonObj = JSONObject(jsonString).getJSONObject("result")
+        val gridStr = resultJsonObj.get("grid").toString()
+        return gridStr
     }
 
 

@@ -18,6 +18,6 @@ class SharedViewModel @Inject constructor(private val gridRefService: GridRefSer
     }
 
     suspend fun searchLocations(keywords: String): List<Location> {
-        return gridRefService.getListOfLocations(keywords)
+        return gridRefService.searchLocationsByKeywords(keywords)
     }
 }

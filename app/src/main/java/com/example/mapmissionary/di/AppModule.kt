@@ -44,8 +44,8 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideLocationSearchViewModel(locationHandler: LocationHandler): LocationSearchViewModel {
-        return LocationSearchViewModel(locationHandler)
+    fun provideLocationSearchViewModel(locationHandler: LocationHandler, gridRefService: GridRefService): LocationSearchViewModel {
+        return LocationSearchViewModel(locationHandler, gridRefService)
     }
 
     @Provides

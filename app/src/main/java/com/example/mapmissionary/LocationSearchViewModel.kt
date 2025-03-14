@@ -11,8 +11,9 @@ import javax.inject.Inject
 
 
 @HiltViewModel
-class LocationSearchViewModel @Inject constructor(private val locationHandler: LocationHandler) :
-    ViewModel() {
+class LocationSearchViewModel @Inject constructor(
+    private val locationHandler: LocationHandler, private val gridRefService: GridRefService
+) : ViewModel() {
     var locations by mutableStateOf(listOf<Location>())
         private set
 
@@ -21,19 +22,25 @@ class LocationSearchViewModel @Inject constructor(private val locationHandler: L
     }
 
     private suspend fun getCurrentLocation(): Location? {
-        return locationHandler.getLocation()
-        // TODO Make api request to get address and grid ref
+        val location = locationHandler.getLocation()
+        return location
     }
 
     fun hasLocationPermission(): Boolean {
         return locationHandler.hasPermission()
     }
 
+
     fun fetchAndUpdateLocation(sharedViewModel: SharedViewModel) {
         viewModelScope.launch {
-            val currentLocation = getCurrentLocation()
+            val currentLocation = getCurrentLocation()?.copy(gridRef = "loading...")
+
             if (currentLocation != null) {
                 sharedViewModel.updateSelectedLocation(currentLocation)
+                val gridRef = gridRefService.getGridFromCoordinates(currentLocation.coordinates)
+                val updatedLocation = currentLocation.copy(gridRef = gridRef)
+
+                sharedViewModel.updateSelectedLocation(updatedLocation)
             }
         }
     }
