@@ -8,7 +8,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class SharedViewModel @Inject constructor(private val gridRefService: GridRefService) :
+class SharedViewModel @Inject constructor(private val geoDojoService: GeoDojoService) :
     ViewModel() {
     var selectedLocation by mutableStateOf(Location())
         private set
@@ -18,6 +18,6 @@ class SharedViewModel @Inject constructor(private val gridRefService: GridRefSer
     }
 
     suspend fun searchLocations(keywords: String): List<Location> {
-        return gridRefService.searchLocationsByKeywords(keywords)
+        return geoDojoService.searchLocationsByKeywords(keywords)
     }
 }

@@ -1,7 +1,7 @@
 package com.example.mapmissionary.di
 
 import android.content.Context
-import com.example.mapmissionary.GridRefService
+import com.example.mapmissionary.GeoDojoService
 import com.example.mapmissionary.Location
 import com.example.mapmissionary.LocationHandler
 import com.example.mapmissionary.LocationSearchViewModel
@@ -20,8 +20,8 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideGridRefService(networkRepository: NetworkRepository): GridRefService {
-        return GridRefService(networkRepository)
+    fun provideGridRefService(networkRepository: NetworkRepository): GeoDojoService {
+        return GeoDojoService(networkRepository)
     }
 
     @Provides
@@ -38,14 +38,14 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideSharedViewModel(gridRefService: GridRefService): SharedViewModel {
-        return SharedViewModel(gridRefService)
+    fun provideSharedViewModel(geoDojoService: GeoDojoService): SharedViewModel {
+        return SharedViewModel(geoDojoService)
     }
 
     @Provides
     @Singleton
-    fun provideLocationSearchViewModel(locationHandler: LocationHandler, gridRefService: GridRefService): LocationSearchViewModel {
-        return LocationSearchViewModel(locationHandler, gridRefService)
+    fun provideLocationSearchViewModel(locationHandler: LocationHandler, geoDojoService: GeoDojoService): LocationSearchViewModel {
+        return LocationSearchViewModel(locationHandler, geoDojoService)
     }
 
     @Provides

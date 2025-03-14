@@ -8,7 +8,7 @@ import javax.inject.Inject
 //  https://api.geodojo.net/locate/region?q=SJ4013267361&type[]=major-town-city&type[]=police-force-area&type[]=county-unitary-authority
 //  https://api.geodojo.net/locate/nearest?q=SH8105953509&&type[]=police-force-area&type[]=county-unitary-authority&type[]=postcode-centre
 
-class GridRefService @Inject constructor(private val networkRepository: NetworkRepository) {
+class GeoDojoService @Inject constructor(private val networkRepository: NetworkRepository) {
     object ApiConfig {
         const val SEARCH_BASE_URL = "https://api.geodojo.net/locate/find"
         const val GRID_BASE_URL = "https://api.geodojo.net/locate/grid?type=grid&q="

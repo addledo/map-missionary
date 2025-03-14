@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LocationSearchViewModel @Inject constructor(
-    private val locationHandler: LocationHandler, private val gridRefService: GridRefService
+    private val locationHandler: LocationHandler, private val geoDojoService: GeoDojoService
 ) : ViewModel() {
     var locations by mutableStateOf(listOf<Location>())
         private set
@@ -37,7 +37,7 @@ class LocationSearchViewModel @Inject constructor(
 
             if (currentLocation != null) {
                 sharedViewModel.updateSelectedLocation(currentLocation)
-                val gridRef = gridRefService.getGridFromCoordinates(currentLocation.coordinates)
+                val gridRef = geoDojoService.getGridFromCoordinates(currentLocation.coordinates)
                 val updatedLocation = currentLocation.copy(gridRef = gridRef)
 
                 sharedViewModel.updateSelectedLocation(updatedLocation)
