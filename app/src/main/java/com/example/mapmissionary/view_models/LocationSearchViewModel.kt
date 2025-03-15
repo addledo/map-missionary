@@ -22,10 +22,6 @@ class LocationSearchViewModel @Inject constructor(
     var locations by mutableStateOf(listOf<Location>())
         private set
 
-    fun updateLocations(locations: List<Location>) {
-        this.locations = locations
-    }
-
     private suspend fun getCurrentLocation(): Location? {
         val location = deviceLocationHandler.getLocation()
         return location
@@ -50,7 +46,9 @@ class LocationSearchViewModel @Inject constructor(
         }
     }
 
-    suspend fun runLocationSearch(searchTerms: String) {
-        locations = geoDojoService.searchLocationsByKeywords(searchTerms)
+    fun runLocationSearch(searchTerms: String) {
+        viewModelScope.launch {
+            locations = geoDojoService.searchLocationsByKeywords(searchTerms)
+        }
     }
 }

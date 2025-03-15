@@ -26,9 +26,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -40,7 +40,6 @@ import androidx.navigation.NavController
 import com.example.mapmissionary.data.Location
 import com.example.mapmissionary.view_models.LocationSearchViewModel
 import com.example.mapmissionary.view_models.SharedViewModel
-import kotlinx.coroutines.launch
 
 @Composable
 fun LocationSearchScreen(navController: NavController?) {
@@ -49,14 +48,10 @@ fun LocationSearchScreen(navController: NavController?) {
 
     var userInput by remember { mutableStateOf("Plas y Brenin") }
 
-    val onLocationSelected: (Location) -> Unit = {
-        location ->
+    val onLocationSelected: (Location) -> Unit = { location ->
         sharedViewModel.updateSelectedLocation(location)
         navController?.navigate("location_details")
     }
-
-    //TODO Do more research on scope and best way to implement this
-    val coroutineScope = rememberCoroutineScope()
 
     val locationPermissionResultLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission(),
@@ -64,7 +59,10 @@ fun LocationSearchScreen(navController: NavController?) {
 
     Column(modifier = Modifier.fillMaxSize()) {
 
-        UserInputBox(userInput) { userInput = it }
+        UserInputBox(
+            userInput,
+            onValueChange = { userInput = it },
+            onSearch = { searchTerms -> viewModel.runLocationSearch(searchTerms) })
 
         LocationResultsLazyColumn(
             viewModel.locations,
@@ -98,9 +96,10 @@ fun LocationSearchScreen(navController: NavController?) {
                 }
             }
             FindButton {
-                coroutineScope.launch {
-                    viewModel.runLocationSearch(userInput)
-                }
+//                coroutineScope.launch {
+//                    viewModel.runLocationSearch(userInput)
+//                }
+                viewModel.runLocationSearch(userInput)
             }
         }
     }
@@ -152,7 +151,12 @@ fun LocationResultsLazyColumn(
 }
 
 @Composable
-fun UserInputBox(userInput: String, onValueChange: (String) -> Unit) {
+fun UserInputBox(
+    userInput: String,
+    onValueChange: (String) -> Unit,
+    onSearch: (String) -> Unit = {}
+) {
+    val keyboard = LocalSoftwareKeyboardController.current
     TextField(
         value = userInput,
         textStyle = TextStyle(fontSize = 20.sp),
@@ -167,7 +171,8 @@ fun UserInputBox(userInput: String, onValueChange: (String) -> Unit) {
         ),
         keyboardActions = KeyboardActions(
             onDone = {
-
+                onSearch(userInput)
+                keyboard?.hide()
             }
         )
     )
@@ -209,7 +214,7 @@ fun LocationSearchScreenPrev() {
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
-        UserInputBox("Plas y Brenin") {}
+        UserInputBox("Plas y Brenin", {})
         LocationResultsLazyColumn(
             listOf(Location(), Location()),
             Modifier
