@@ -1,6 +1,7 @@
-package com.example.mapmissionary
+package com.example.mapmissionary.utilities
 
 import android.util.Log
+import com.example.mapmissionary.data.Location
 import org.json.JSONObject
 import javax.inject.Inject
 

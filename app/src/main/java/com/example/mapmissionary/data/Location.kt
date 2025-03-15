@@ -1,4 +1,4 @@
-package com.example.mapmissionary
+package com.example.mapmissionary.data
 
 data class Location(
     var address: String? = null,

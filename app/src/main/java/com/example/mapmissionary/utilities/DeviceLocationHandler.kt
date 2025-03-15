@@ -1,7 +1,8 @@
-package com.example.mapmissionary
+package com.example.mapmissionary.utilities
 
 import android.annotation.SuppressLint
 import android.content.Context
+import com.example.mapmissionary.data.Location
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import kotlinx.coroutines.tasks.await

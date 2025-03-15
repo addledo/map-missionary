@@ -1,10 +1,13 @@
-package com.example.mapmissionary
+package com.example.mapmissionary.view_models
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.mapmissionary.utilities.DeviceLocationHandler
+import com.example.mapmissionary.utilities.GeoDojoService
+import com.example.mapmissionary.data.Location
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject

@@ -8,6 +8,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.mapmissionary.ui.theme.MapMissionaryTheme
+import com.example.mapmissionary.views.LocationDetailsScreen
+import com.example.mapmissionary.views.LocationSearchScreen
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

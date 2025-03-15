@@ -1,4 +1,4 @@
-package com.example.mapmissionary
+package com.example.mapmissionary.utilities
 
 import android.content.Context
 import android.content.pm.PackageManager

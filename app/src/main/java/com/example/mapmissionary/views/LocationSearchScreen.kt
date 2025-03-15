@@ -1,5 +1,6 @@
-package com.example.mapmissionary
+package com.example.mapmissionary.views
 
+import android.Manifest
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
@@ -33,6 +34,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.example.mapmissionary.data.Location
+import com.example.mapmissionary.view_models.LocationSearchViewModel
+import com.example.mapmissionary.view_models.SharedViewModel
 import kotlinx.coroutines.launch
 
 @Composable
@@ -72,7 +76,7 @@ fun LocationSearchScreen(navController: NavController?) {
                 .padding(top = 30.dp)
         ) {
             CurrentLocationButton {
-                locationPermissionResultLauncher.launch(android.Manifest.permission.ACCESS_FINE_LOCATION)
+                locationPermissionResultLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
 
                 if (viewModel.hasLocationPermission()) {
                     sharedViewModel.updateSelectedLocation(

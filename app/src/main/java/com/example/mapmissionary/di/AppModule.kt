@@ -1,12 +1,12 @@
 package com.example.mapmissionary.di
 
 import android.content.Context
-import com.example.mapmissionary.GeoDojoService
-import com.example.mapmissionary.Location
-import com.example.mapmissionary.DeviceLocationHandler
-import com.example.mapmissionary.LocationSearchViewModel
-import com.example.mapmissionary.SharedViewModel
-import com.example.mapmissionary.NetworkRepository
+import com.example.mapmissionary.utilities.GeoDojoService
+import com.example.mapmissionary.data.Location
+import com.example.mapmissionary.utilities.DeviceLocationHandler
+import com.example.mapmissionary.view_models.LocationSearchViewModel
+import com.example.mapmissionary.view_models.SharedViewModel
+import com.example.mapmissionary.utilities.NetworkRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
