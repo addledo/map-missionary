@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LocationSearchViewModel @Inject constructor(
-    private val locationHandler: LocationHandler, private val geoDojoService: GeoDojoService
+    private val deviceLocationHandler: DeviceLocationHandler, private val geoDojoService: GeoDojoService
 ) : ViewModel() {
     var locations by mutableStateOf(listOf<Location>())
         private set
@@ -22,12 +22,12 @@ class LocationSearchViewModel @Inject constructor(
     }
 
     private suspend fun getCurrentLocation(): Location? {
-        val location = locationHandler.getLocation()
+        val location = deviceLocationHandler.getLocation()
         return location
     }
 
     fun hasLocationPermission(): Boolean {
-        return locationHandler.hasPermission()
+        return deviceLocationHandler.hasPermission()
     }
 
 

@@ -3,7 +3,7 @@ package com.example.mapmissionary.di
 import android.content.Context
 import com.example.mapmissionary.GeoDojoService
 import com.example.mapmissionary.Location
-import com.example.mapmissionary.LocationHandler
+import com.example.mapmissionary.DeviceLocationHandler
 import com.example.mapmissionary.LocationSearchViewModel
 import com.example.mapmissionary.SharedViewModel
 import com.example.mapmissionary.NetworkRepository
@@ -44,13 +44,13 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideLocationSearchViewModel(locationHandler: LocationHandler, geoDojoService: GeoDojoService): LocationSearchViewModel {
-        return LocationSearchViewModel(locationHandler, geoDojoService)
+    fun provideLocationSearchViewModel(deviceLocationHandler: DeviceLocationHandler, geoDojoService: GeoDojoService): LocationSearchViewModel {
+        return LocationSearchViewModel(deviceLocationHandler, geoDojoService)
     }
 
     @Provides
     @Singleton
-    fun provideLocationHandler(@ApplicationContext context: Context): LocationHandler {
-        return LocationHandler(context)
+    fun provideLocationHandler(@ApplicationContext context: Context): DeviceLocationHandler {
+        return DeviceLocationHandler(context)
     }
 }
