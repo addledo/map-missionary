@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.Button
@@ -29,6 +31,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -44,7 +47,13 @@ fun LocationSearchScreen(navController: NavController?) {
     val sharedViewModel = hiltViewModel<SharedViewModel>()
     val viewModel = hiltViewModel<LocationSearchViewModel>()
 
-    var userInput by remember { mutableStateOf("Cardiff") }
+    var userInput by remember { mutableStateOf("Plas y Brenin") }
+
+    val onLocationSelected: (Location) -> Unit = {
+        location ->
+        sharedViewModel.updateSelectedLocation(location)
+        navController?.navigate("location_details")
+    }
 
     //TODO Do more research on scope and best way to implement this
     val coroutineScope = rememberCoroutineScope()
@@ -62,11 +71,9 @@ fun LocationSearchScreen(navController: NavController?) {
             Modifier
                 .weight(1F)
                 .fillMaxWidth()
-                .padding(horizontal = 30.dp)
-        ) { location ->
-            sharedViewModel.updateSelectedLocation(location)
-            navController?.navigate("location_details")
-        }
+                .padding(horizontal = 30.dp),
+            onLocationSelected = onLocationSelected
+        )
 
         Row(
             horizontalArrangement = Arrangement.SpaceAround,
@@ -92,7 +99,7 @@ fun LocationSearchScreen(navController: NavController?) {
             }
             FindButton {
                 coroutineScope.launch {
-                    viewModel.updateLocations(sharedViewModel.searchLocations(userInput))
+                    viewModel.runLocationSearch(userInput)
                 }
             }
         }
@@ -154,7 +161,15 @@ fun UserInputBox(userInput: String, onValueChange: (String) -> Unit) {
         modifier = Modifier
             .padding(25.dp)
             .padding(bottom = 10.dp)
-            .fillMaxWidth()
+            .fillMaxWidth(),
+        keyboardOptions = KeyboardOptions.Default.copy(
+            imeAction = ImeAction.Done
+        ),
+        keyboardActions = KeyboardActions(
+            onDone = {
+
+            }
+        )
     )
 }
 

@@ -18,8 +18,4 @@ class SharedViewModel @Inject constructor(private val geoDojoService: GeoDojoSer
     fun updateSelectedLocation(newLocation: Location) {
         selectedLocation = newLocation
     }
-
-    suspend fun searchLocations(keywords: String): List<Location> {
-        return geoDojoService.searchLocationsByKeywords(keywords)
-    }
 }

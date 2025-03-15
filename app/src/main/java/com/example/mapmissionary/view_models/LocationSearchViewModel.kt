@@ -15,8 +15,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LocationSearchViewModel @Inject constructor(
-    private val deviceLocationHandler: DeviceLocationHandler, private val geoDojoService: GeoDojoService
+    private val deviceLocationHandler: DeviceLocationHandler,
+    private val geoDojoService: GeoDojoService,
 ) : ViewModel() {
+
     var locations by mutableStateOf(listOf<Location>())
         private set
 
@@ -46,5 +48,9 @@ class LocationSearchViewModel @Inject constructor(
                 sharedViewModel.updateSelectedLocation(updatedLocation)
             }
         }
+    }
+
+    suspend fun runLocationSearch(searchTerms: String) {
+        locations = geoDojoService.searchLocationsByKeywords(searchTerms)
     }
 }
