@@ -43,6 +43,7 @@ import com.example.mapmissionary.view_models.SharedViewModel
 
 @Composable
 fun LocationSearchScreen(navController: NavController?) {
+
     val sharedViewModel = hiltViewModel<SharedViewModel>()
     val viewModel = hiltViewModel<LocationSearchViewModel>()
 
@@ -57,8 +58,11 @@ fun LocationSearchScreen(navController: NavController?) {
         contract = ActivityResultContracts.RequestPermission(),
         onResult = {})
 
-    Column(modifier = Modifier.fillMaxSize()) {
 
+
+
+
+    Column(modifier = Modifier.fillMaxSize()) {
         UserInputBox(
             userInput,
             onValueChange = { userInput = it },
@@ -96,15 +100,29 @@ fun LocationSearchScreen(navController: NavController?) {
                 }
             }
             FindButton {
-//                coroutineScope.launch {
-//                    viewModel.runLocationSearch(userInput)
-//                }
                 viewModel.runLocationSearch(userInput)
             }
         }
     }
 }
 
+
+@Composable
+fun LocationResultsLazyColumn(
+    locations: List<Location>, modifier: Modifier, onLocationSelected: (Location) -> Unit
+) {
+    LazyColumn(
+        modifier = modifier
+    ) {
+        itemsIndexed(locations) { _, location ->
+            Row(
+                modifier = Modifier
+            ) {
+                LocationCard(location, onLocationSelected)
+            }
+        }
+    }
+}
 
 @Composable
 fun LocationCard(location: Location, onLocationSelected: (Location) -> Unit) {
@@ -131,23 +149,6 @@ fun formatLocationCardText(location: Location): String {
     builder.append(newLine)
     builder.append(location.gridRef ?: "Grid reference not found")
     return builder.toString()
-}
-
-@Composable
-fun LocationResultsLazyColumn(
-    locations: List<Location>, modifier: Modifier, onLocationSelected: (Location) -> Unit
-) {
-    LazyColumn(
-        modifier = modifier
-    ) {
-        itemsIndexed(locations) { _, location ->
-            Row(
-                modifier = Modifier
-            ) {
-                LocationCard(location, onLocationSelected)
-            }
-        }
-    }
 }
 
 @Composable

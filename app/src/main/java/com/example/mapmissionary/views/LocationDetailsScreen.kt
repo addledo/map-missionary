@@ -10,6 +10,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.text.AnnotatedString
@@ -20,11 +21,19 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.example.mapmissionary.view_models.LocationDetailsViewModel
 import com.example.mapmissionary.view_models.SharedViewModel
 
 @Composable
 fun LocationDetailsScreen(navController: NavController?) {
     val sharedViewModel = hiltViewModel<SharedViewModel>()
+    val viewModel = hiltViewModel<LocationDetailsViewModel>()
+
+    if (sharedViewModel.selectedLocation.coordinates == null) {
+        LaunchedEffect(Unit) {
+            viewModel.updateLatLong(sharedViewModel)
+        }
+    }
 
     Column(
         modifier = Modifier

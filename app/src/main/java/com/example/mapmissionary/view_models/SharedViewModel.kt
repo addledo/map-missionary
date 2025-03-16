@@ -17,4 +17,5 @@ class SharedViewModel @Inject constructor() :
     fun updateSelectedLocation(newLocation: Location) {
         selectedLocation = newLocation
     }
+
 }

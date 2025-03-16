@@ -39,7 +39,7 @@ object GeoDojoJsonParser {
     }
 
 
-    fun parseSingleGridJSON(jsonString: String): String {
+    fun parseGridApiJson(jsonString: String, type: String): String {
 //        The string returned is in this format:
 //        {
 //            "location": "50,1",
@@ -50,7 +50,8 @@ object GeoDojoJsonParser {
         try {
             val json = JSONObject(jsonString)
             val resultJsonObj = json.getJSONObject("result")
-            val gridRef = resultJsonObj.get("grid").toString()
+            // type should be either "grid" or "latlng"
+            val gridRef = resultJsonObj.get(type).toString()
 
             return gridRef
 

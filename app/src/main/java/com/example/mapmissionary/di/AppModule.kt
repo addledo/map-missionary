@@ -6,6 +6,7 @@ import com.example.mapmissionary.interfaces.GridRefProvider
 import com.example.mapmissionary.utilities.DeviceLocationHandler
 import com.example.mapmissionary.utilities.GeoDojoService
 import com.example.mapmissionary.utilities.NetworkRepository
+import com.example.mapmissionary.view_models.LocationDetailsViewModel
 import com.example.mapmissionary.view_models.LocationSearchViewModel
 import com.example.mapmissionary.view_models.SharedViewModel
 import dagger.Module
@@ -44,8 +45,20 @@ object AppModule {
 
     @Provides
     @Singleton
+    fun provideLocationDetailsViewModel(geoDojoService: GeoDojoService): LocationDetailsViewModel {
+        return LocationDetailsViewModel(geoDojoService)
+    }
+
+    @Provides
+    @Singleton
     fun provideLocationHandler(@ApplicationContext context: Context): DeviceLocationHandler {
         return DeviceLocationHandler(context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGeoDojoService(networkRepository: NetworkRepository): GeoDojoService {
+        return GeoDojoService(networkRepository)
     }
 
     @Provides
@@ -53,4 +66,5 @@ object AppModule {
     fun provideGridRefProvider(networkRepository: NetworkRepository): GridRefProvider {
         return GeoDojoService(networkRepository)
     }
+
 }
