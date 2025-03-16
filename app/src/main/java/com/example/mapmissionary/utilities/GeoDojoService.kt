@@ -1,6 +1,6 @@
 package com.example.mapmissionary.utilities
 
-import android.util.Log
+import com.example.mapmissionary.GeoDojoUrlConfig
 import com.example.mapmissionary.data.LatLong
 import com.example.mapmissionary.data.Location
 import com.example.mapmissionary.interfaces.GridRefProvider
@@ -13,29 +13,14 @@ import javax.inject.Inject
 
 class GeoDojoService @Inject constructor(private val networkRepository: NetworkRepository) :
     GridRefProvider {
-    object ApiConfig {
-        const val SEARCH_BASE_URL = "https://api.geodojo.net/locate/find"
-        const val GRID_BASE_URL = "https://api.geodojo.net/locate/grid?type=grid&q="
-
-        const val MAX_RESULTS = 10
-    }
 
     suspend fun searchLocationsByKeywords(keyWords: String): List<Location> {
         val validatedKeyWords = PostcodeValidator.validate(keyWords)
-        val url = constructSearchRequestUrl(validatedKeyWords)
+        val url = GeoDojoUrlConfig.getGridFromKeywordsUrl(validatedKeyWords)
         val locationsJSON = networkRepository.fetchData(url)
         return processSearchJSON(locationsJSON)
     }
 
-
-    private fun constructSearchRequestUrl(keyWords: String): String {
-        val locationArgs = keyWords.replace(Regex("\\s+"), "+")
-        val maxResultsArg = "max=${ApiConfig.MAX_RESULTS}"
-        val typeArg = "type=grid"
-        val requestUrl = "${ApiConfig.SEARCH_BASE_URL}?q=$locationArgs&$maxResultsArg&$typeArg"
-        Log.i("url", requestUrl)
-        return requestUrl
-    }
 
     private fun processSearchJSON(jsonString: String): List<Location> {
         if (jsonString.isBlank()) {
@@ -68,12 +53,12 @@ class GeoDojoService @Inject constructor(private val networkRepository: NetworkR
         return gridStr
     }
 
-    private fun LatLong.formatForApiQuery(): String {
-        return "$lat+$long"
-    }
 
-    override suspend fun getGridFromLatLong(latLong: LatLong): String {
-        val url = ApiConfig.GRID_BASE_URL + latLong.formatForApiQuery()
+    override suspend fun getGridFromLatLong(latLong: LatLong?): String {
+        if (latLong == null) {
+            return "Not found"
+        }
+        val url = GeoDojoUrlConfig.getGridFromLatLongUrl(latLong)
         val resultJSON = networkRepository.fetchData(url)
         return processGridJSON(resultJSON)
     }

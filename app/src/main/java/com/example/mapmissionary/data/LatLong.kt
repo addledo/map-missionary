@@ -1,7 +1,5 @@
 package com.example.mapmissionary.data
 
-import com.example.mapmissionary.interfaces.GridRefProvider
-
 data class LatLong(val lat: Double, val long: Double) {
 
 
@@ -10,13 +8,10 @@ data class LatLong(val lat: Double, val long: Double) {
         val format = "%.${decimalPlacesForOneMeterAccuracy}f"
 
         // Rounds to specified DP and then removes trailing 0s
-        val latStr = format.format(lat).trimEnd {it == '0'}
-        val longStr = format.format(long).trimEnd {it == '0'}
+        // Also removes the decimal point if there are no numbers after it
+        val latStr = format.format(lat).trimEnd { it == '0' || it == '.' }
+        val longStr = format.format(long).trimEnd { it == '0' || it == '.' }
 
         return "$latStr, $longStr"
-    }
-
-    suspend fun getGridRef(gridRefProvider: GridRefProvider): String {
-        return gridRefProvider.getGridFromLatLong(this)
     }
 }
