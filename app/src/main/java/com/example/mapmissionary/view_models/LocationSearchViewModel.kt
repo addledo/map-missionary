@@ -38,7 +38,8 @@ class LocationSearchViewModel @Inject constructor(
 
             if (currentLocation != null) {
                 sharedViewModel.updateSelectedLocation(currentLocation)
-                val gridRef = geoDojoService.getGridFromCoordinates(currentLocation.coordinates)
+                // TODO Perhaps high abstraction converter class for this?
+                val gridRef = currentLocation.coordinates?.getGridRef(geoDojoService)
                 val updatedLocation = currentLocation.copy(gridRef = gridRef)
 
                 sharedViewModel.updateSelectedLocation(updatedLocation)

@@ -11,7 +11,8 @@ import javax.inject.Inject
 //  https://api.geodojo.net/locate/region?q=SJ4013267361&type[]=major-town-city&type[]=police-force-area&type[]=county-unitary-authority
 //  https://api.geodojo.net/locate/nearest?q=SH8105953509&&type[]=police-force-area&type[]=county-unitary-authority&type[]=postcode-centre
 
-class GeoDojoService @Inject constructor(private val networkRepository: NetworkRepository): GridRefProvider {
+class GeoDojoService @Inject constructor(private val networkRepository: NetworkRepository) :
+    GridRefProvider {
     object ApiConfig {
         const val SEARCH_BASE_URL = "https://api.geodojo.net/locate/find"
         const val GRID_BASE_URL = "https://api.geodojo.net/locate/grid?type=grid&q="
@@ -26,23 +27,6 @@ class GeoDojoService @Inject constructor(private val networkRepository: NetworkR
         return processSearchJSON(locationsJSON)
     }
 
-    suspend fun getGridFromCoordinates(coordinateString: String?): String {
-        if (coordinateString == null) {
-            return "Not found"
-        }
-        val url = ApiConfig.GRID_BASE_URL + formatCoordinateStringForApi(coordinateString)
-        Log.i("url", url)
-        val resultJSON = networkRepository.fetchData(url)
-        return processGridJSON(resultJSON)
-    }
-
-
-
-    private fun formatCoordinateStringForApi(coordinateString: String): String {
-        val formattedString = coordinateString.replace(", ", "+")
-        Log.i("formatting", "Coordinates formatted to $formattedString")
-        return formattedString
-    }
 
     private fun constructSearchRequestUrl(keyWords: String): String {
         val locationArgs = keyWords.replace(Regex("\\s+"), "+")
@@ -88,7 +72,7 @@ class GeoDojoService @Inject constructor(private val networkRepository: NetworkR
         return "$lat+$long"
     }
 
-    override suspend fun getFromLatLong(latLong: LatLong): String {
+    override suspend fun getGridFromLatLong(latLong: LatLong): String {
         val url = ApiConfig.GRID_BASE_URL + latLong.formatForApiQuery()
         val resultJSON = networkRepository.fetchData(url)
         return processGridJSON(resultJSON)

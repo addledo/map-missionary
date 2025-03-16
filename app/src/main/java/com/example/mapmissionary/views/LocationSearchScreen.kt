@@ -88,7 +88,7 @@ fun LocationSearchScreen(navController: NavController?) {
                         Location(
                             address = "loading...",
                             gridRef = "loading...",
-                            coordinates = "loading...",
+//                            coordinates = null
                         )
                     )
                     navController?.navigate("location_details")

@@ -1,12 +1,13 @@
 package com.example.mapmissionary.di
 
 import android.content.Context
-import com.example.mapmissionary.utilities.GeoDojoService
 import com.example.mapmissionary.data.Location
+import com.example.mapmissionary.interfaces.GridRefProvider
 import com.example.mapmissionary.utilities.DeviceLocationHandler
+import com.example.mapmissionary.utilities.GeoDojoService
+import com.example.mapmissionary.utilities.NetworkRepository
 import com.example.mapmissionary.view_models.LocationSearchViewModel
 import com.example.mapmissionary.view_models.SharedViewModel
-import com.example.mapmissionary.utilities.NetworkRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -17,13 +18,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
-
-    @Provides
-    @Singleton
-    fun provideGridRefService(networkRepository: NetworkRepository): GeoDojoService {
-        return GeoDojoService(networkRepository)
-    }
-
     @Provides
     @Singleton
     fun provideLocation(): Location {
@@ -38,8 +32,8 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideSharedViewModel(geoDojoService: GeoDojoService): SharedViewModel {
-        return SharedViewModel(geoDojoService)
+    fun provideSharedViewModel(): SharedViewModel {
+        return SharedViewModel()
     }
 
     @Provides
@@ -52,5 +46,11 @@ object AppModule {
     @Singleton
     fun provideLocationHandler(@ApplicationContext context: Context): DeviceLocationHandler {
         return DeviceLocationHandler(context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGridRefProvider(networkRepository: NetworkRepository): GridRefProvider {
+        return GeoDojoService(networkRepository)
     }
 }

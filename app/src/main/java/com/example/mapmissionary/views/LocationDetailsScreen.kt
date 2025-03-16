@@ -36,14 +36,15 @@ fun LocationDetailsScreen(navController: NavController?) {
     ) {
         ScreenTitle("Location")
 
+        // TODO Placeholder strings may need changing
         CardTitle("Address")
         DetailCard(sharedViewModel.selectedLocation.address ?: "Not found")
 
         CardTitle("Grid Reference")
-        DetailCard(sharedViewModel.selectedLocation.gridRef ?: "Not found")
+        DetailCard(sharedViewModel.selectedLocation.gridRef ?: "loading...")
 
         CardTitle("Coordinates")
-        DetailCard(sharedViewModel.selectedLocation.coordinates ?: "Not found")
+        DetailCard(sharedViewModel.selectedLocation.coordinates?.toString() ?: "loading...")
 
         Spacer(modifier = Modifier.weight(1F))
 
