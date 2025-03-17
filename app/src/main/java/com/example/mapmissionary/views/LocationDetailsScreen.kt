@@ -29,7 +29,9 @@ fun LocationDetailsScreen(navController: NavController?) {
     val sharedViewModel = hiltViewModel<SharedViewModel>()
     val viewModel = hiltViewModel<LocationDetailsViewModel>()
 
-    if (sharedViewModel.selectedLocation.coordinates == null) {
+    if (sharedViewModel.selectedLocation.gridRef != null
+        && sharedViewModel.selectedLocation.coordinates == null
+    ) {
         LaunchedEffect(Unit) {
             viewModel.updateLatLong(sharedViewModel)
         }
@@ -45,7 +47,6 @@ fun LocationDetailsScreen(navController: NavController?) {
     ) {
         ScreenTitle("Location")
 
-        // TODO Placeholder strings may need changing
         CardTitle("Address")
         DetailCard(sharedViewModel.selectedLocation.address ?: "Not found")
 

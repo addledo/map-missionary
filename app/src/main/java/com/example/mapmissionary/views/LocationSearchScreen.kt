@@ -90,9 +90,9 @@ fun LocationSearchScreen(navController: NavController?) {
                 if (viewModel.hasLocationPermission()) {
                     sharedViewModel.updateSelectedLocation(
                         Location(
-                            address = "loading...",
-                            gridRef = "loading...",
-//                            coordinates = null
+                            address = null,
+                            gridRef = null,
+                            coordinates = null
                         )
                     )
                     navController?.navigate("location_details")
