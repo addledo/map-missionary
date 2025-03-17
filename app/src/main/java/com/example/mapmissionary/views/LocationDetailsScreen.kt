@@ -77,7 +77,6 @@ fun CardTitle(title: String) {
 
 @Composable
 fun DetailCard(content: String) {
-    //TODO Move clipboard manager instance
     val clipboardManager = LocalClipboardManager.current
     OutlinedCard(
         modifier = Modifier

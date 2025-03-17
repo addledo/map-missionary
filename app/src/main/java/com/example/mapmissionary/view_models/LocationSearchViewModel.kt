@@ -1,5 +1,6 @@
 package com.example.mapmissionary.view_models
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -22,31 +23,32 @@ class LocationSearchViewModel @Inject constructor(
     private val locationSearchProvider: LocationSearchProvider
 ) : ViewModel() {
 
+    init {
+        Log.d("vm", "Initialising search vm")
+    }
     var locations by mutableStateOf(listOf<Location>())
         private set
-
-    private suspend fun getCurrentLocation(): Location? {
-        val location = deviceLocationHandler.getLocation()
-        return location
-    }
 
     fun hasLocationPermission(): Boolean {
         return deviceLocationHandler.hasPermission()
     }
 
-
     fun fetchAndUpdateLocation(sharedViewModel: SharedViewModel) {
         viewModelScope.launch {
-            val currentLocation = getCurrentLocation()?.copy(gridRef = "loading...")
+            val currentLocation = deviceLocationHandler.getLocation()?.copy(
+                address = "Unspecified",
+                gridRef = "loading..."
+            )
 
-            if (currentLocation != null) {
+            if (currentLocation == null) {
+                sharedViewModel.updateSelectedLocation(Location.empty())
+            } else {
                 sharedViewModel.updateSelectedLocation(currentLocation)
                 val gridRef = gridRefProvider.getGridFromLatLong(currentLocation.coordinates)
                 val updatedLocation = currentLocation.copy(gridRef = gridRef)
 
                 sharedViewModel.updateSelectedLocation(updatedLocation)
             }
-            // TODO Add logic for if null
         }
     }
 

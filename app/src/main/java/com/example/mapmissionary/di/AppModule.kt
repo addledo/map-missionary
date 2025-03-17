@@ -3,12 +3,11 @@ package com.example.mapmissionary.di
 import android.content.Context
 import com.example.mapmissionary.data.Location
 import com.example.mapmissionary.interfaces.GridRefProvider
+import com.example.mapmissionary.interfaces.LatLongProvider
 import com.example.mapmissionary.interfaces.LocationSearchProvider
 import com.example.mapmissionary.utilities.DeviceLocationHandler
 import com.example.mapmissionary.utilities.GeoDojoService
 import com.example.mapmissionary.utilities.NetworkRepository
-import com.example.mapmissionary.view_models.LocationDetailsViewModel
-import com.example.mapmissionary.view_models.LocationSearchViewModel
 import com.example.mapmissionary.view_models.SharedViewModel
 import dagger.Module
 import dagger.Provides
@@ -40,26 +39,6 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideLocationSearchViewModel(
-        deviceLocationHandler: DeviceLocationHandler,
-        gridRefProvider: GridRefProvider,
-        locationSearchProvider: LocationSearchProvider
-    ): LocationSearchViewModel {
-        return LocationSearchViewModel(
-            deviceLocationHandler,
-            gridRefProvider,
-            locationSearchProvider
-        )
-    }
-
-    @Provides
-    @Singleton
-    fun provideLocationDetailsViewModel(geoDojoService: GeoDojoService): LocationDetailsViewModel {
-        return LocationDetailsViewModel(geoDojoService)
-    }
-
-    @Provides
-    @Singleton
     fun provideLocationHandler(@ApplicationContext context: Context): DeviceLocationHandler {
         return DeviceLocationHandler(context)
     }
@@ -73,6 +52,12 @@ object AppModule {
     @Provides
     @Singleton
     fun provideGridRefProvider(geoDojoService: GeoDojoService): GridRefProvider {
+        return geoDojoService
+    }
+
+    @Provides
+    @Singleton
+    fun provideLatLongProvider(geoDojoService: GeoDojoService): LatLongProvider {
         return geoDojoService
     }
 

@@ -33,6 +33,7 @@ object GeoDojoJsonParser {
             return locations.toList()
 
         } catch (e: JSONException) {
+            Log.e("json", "Caught exception in parseSearchJSON()")
             Log.e("json", e.toString())
             return listOf()
         }
@@ -56,6 +57,7 @@ object GeoDojoJsonParser {
             return gridRef
 
         } catch (e: JSONException) {
+            Log.e("json", "Caught exception in parseGridApiJSON()")
             Log.e("json", e.toString())
             return "Error parsing JSON"
         }
