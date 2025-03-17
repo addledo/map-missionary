@@ -40,7 +40,7 @@ object GeoDojoJsonParser {
     }
 
 
-    fun parseGridApiJson(jsonString: String, type: String): String {
+    fun parseGridApiJson(jsonString: String, type: String): String? {
 //        The string returned is in this format:
 //        {
 //            "location": "50,1",
@@ -59,7 +59,7 @@ object GeoDojoJsonParser {
         } catch (e: JSONException) {
             Log.e("json", "Caught exception in parseGridApiJSON()")
             Log.e("json", e.toString())
-            return "Error parsing JSON"
+            return null
         }
     }
 }

@@ -12,7 +12,7 @@ import java.util.Scanner
 
 class NetworkRepository {
     private val debugTag = "network_repo"
-    suspend fun fetchData(urlString: String, connectTimeout: Int = 5, readTimeout: Int = 5): String {
+    suspend fun fetchData(urlString: String, connectTimeout: Int = 5, readTimeout: Int = 5): String? {
 
         return withContext(Dispatchers.IO) {
             val url = URL(urlString)
@@ -25,7 +25,7 @@ class NetworkRepository {
 
                 val responseCode = connection.responseCode
 
-                if (!isActive) return@withContext ""
+                if (!isActive) return@withContext null
 
                 if (responseCode == HttpURLConnection.HTTP_OK) {
                     Log.d(debugTag, "HTTP Connection successful")
@@ -36,15 +36,15 @@ class NetworkRepository {
 
                 } else {
                     Log.d(debugTag, "Connection failed. HTTP Response code $responseCode")
-                    return@withContext ""
+                    return@withContext null
                 }
             } catch (e: IOException) {
                 if (!isActive) {
                     Log.d(debugTag, "Caught IOException but job cancelled")
-                    return@withContext ""
+                    return@withContext null
                 }
                 Log.d(debugTag, "Caught IO Exception: $e")
-                return@withContext ""
+                return@withContext null
             }
         }
     }

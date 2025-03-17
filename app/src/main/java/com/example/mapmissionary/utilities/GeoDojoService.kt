@@ -15,16 +15,16 @@ class GeoDojoService @Inject constructor(private val networkRepository: NetworkR
     override suspend fun searchLocationsByKeywords(keyWords: String): List<Location> {
         val validatedKeyWords = PostcodeValidator.validate(keyWords)
         val url = GeoDojoUrlConfig.getGridFromKeywordsUrl(validatedKeyWords)
-        val locationsJSON = networkRepository.fetchData(url)
+        val locationsJSON = networkRepository.fetchData(url) ?: return listOf()
         return GeoDojoJsonParser.parseSearchJSON(locationsJSON)
     }
 
-    override suspend fun getGridFromLatLong(latLong: LatLong?): String {
+    override suspend fun getGridFromLatLong(latLong: LatLong?): String? {
         if (latLong == null) {
-            return "Not found"
+            return null
         }
         val url = GeoDojoUrlConfig.getGridFromLatLongUrl(latLong)
-        val resultJSON = networkRepository.fetchData(url)
+        val resultJSON = networkRepository.fetchData(url) ?: return "Not found"
         return GeoDojoJsonParser.parseGridApiJson(resultJSON, "grid")
     }
 
@@ -34,16 +34,13 @@ class GeoDojoService @Inject constructor(private val networkRepository: NetworkR
         }
 
         val url = GeoDojoUrlConfig.getLatLongFromGridUrl(gridRef)
-        val resultJSON = networkRepository.fetchData(url)
+        val resultJSON = networkRepository.fetchData(url) ?: return null
 
         val latLongStr = GeoDojoJsonParser.parseGridApiJson(resultJSON, "latlng")
+            ?: return null
         return LatLong(
             lat = latLongStr.substringBefore(" ").toDouble(),
             long = latLongStr.substringAfter(" ").toDouble()
         )
     }
-
-//    suspend fun getExtraDetails(gridRef: String) {
-//        val url = GeoDojoUrlConfig.getExtraDetailsFromGridRefUrl(gridRef)
-//    }
 }
