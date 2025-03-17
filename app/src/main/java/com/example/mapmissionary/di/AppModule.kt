@@ -3,6 +3,7 @@ package com.example.mapmissionary.di
 import android.content.Context
 import com.example.mapmissionary.data.Location
 import com.example.mapmissionary.interfaces.GridRefProvider
+import com.example.mapmissionary.interfaces.LocationSearchProvider
 import com.example.mapmissionary.utilities.DeviceLocationHandler
 import com.example.mapmissionary.utilities.GeoDojoService
 import com.example.mapmissionary.utilities.NetworkRepository
@@ -39,8 +40,16 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideLocationSearchViewModel(deviceLocationHandler: DeviceLocationHandler, geoDojoService: GeoDojoService): LocationSearchViewModel {
-        return LocationSearchViewModel(deviceLocationHandler, geoDojoService)
+    fun provideLocationSearchViewModel(
+        deviceLocationHandler: DeviceLocationHandler,
+        gridRefProvider: GridRefProvider,
+        locationSearchProvider: LocationSearchProvider
+    ): LocationSearchViewModel {
+        return LocationSearchViewModel(
+            deviceLocationHandler,
+            gridRefProvider,
+            locationSearchProvider
+        )
     }
 
     @Provides
@@ -63,8 +72,13 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideGridRefProvider(networkRepository: NetworkRepository): GridRefProvider {
-        return GeoDojoService(networkRepository)
+    fun provideGridRefProvider(geoDojoService: GeoDojoService): GridRefProvider {
+        return geoDojoService
     }
 
+    @Provides
+    @Singleton
+    fun provideLocationSearchProvider(geoDojoService: GeoDojoService): LocationSearchProvider {
+        return geoDojoService
+    }
 }

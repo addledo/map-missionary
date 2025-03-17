@@ -6,12 +6,13 @@ import com.example.mapmissionary.data.LatLong
 import com.example.mapmissionary.data.Location
 import com.example.mapmissionary.interfaces.GridRefProvider
 import com.example.mapmissionary.interfaces.LatLongProvider
+import com.example.mapmissionary.interfaces.LocationSearchProvider
 import javax.inject.Inject
 
 class GeoDojoService @Inject constructor(private val networkRepository: NetworkRepository) :
-    GridRefProvider, LatLongProvider {
+    GridRefProvider, LatLongProvider, LocationSearchProvider {
 
-    suspend fun searchLocationsByKeywords(keyWords: String): List<Location> {
+    override suspend fun searchLocationsByKeywords(keyWords: String): List<Location> {
         val validatedKeyWords = PostcodeValidator.validate(keyWords)
         val url = GeoDojoUrlConfig.getGridFromKeywordsUrl(validatedKeyWords)
         val locationsJSON = networkRepository.fetchData(url)

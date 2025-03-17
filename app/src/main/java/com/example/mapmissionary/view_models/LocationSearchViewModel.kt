@@ -6,8 +6,9 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mapmissionary.data.Location
+import com.example.mapmissionary.interfaces.GridRefProvider
+import com.example.mapmissionary.interfaces.LocationSearchProvider
 import com.example.mapmissionary.utilities.DeviceLocationHandler
-import com.example.mapmissionary.utilities.GeoDojoService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -16,7 +17,8 @@ import javax.inject.Inject
 @HiltViewModel
 class LocationSearchViewModel @Inject constructor(
     private val deviceLocationHandler: DeviceLocationHandler,
-    private val geoDojoService: GeoDojoService,
+    private val gridRefProvider: GridRefProvider,
+    private val locationSearchProvider: LocationSearchProvider
 ) : ViewModel() {
 
     var locations by mutableStateOf(listOf<Location>())
@@ -38,8 +40,7 @@ class LocationSearchViewModel @Inject constructor(
 
             if (currentLocation != null) {
                 sharedViewModel.updateSelectedLocation(currentLocation)
-                // TODO Perhaps higher abstraction converter class for this?
-                val gridRef = geoDojoService.getGridFromLatLong(currentLocation.coordinates)
+                val gridRef = gridRefProvider.getGridFromLatLong(currentLocation.coordinates)
                 val updatedLocation = currentLocation.copy(gridRef = gridRef)
 
                 sharedViewModel.updateSelectedLocation(updatedLocation)
@@ -50,7 +51,7 @@ class LocationSearchViewModel @Inject constructor(
 
     fun runLocationSearch(searchTerms: String) {
         viewModelScope.launch {
-            locations = geoDojoService.searchLocationsByKeywords(searchTerms)
+            locations = locationSearchProvider.searchLocationsByKeywords(searchTerms)
         }
     }
 }
