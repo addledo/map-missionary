@@ -185,7 +185,7 @@ fun CurrentLocationButton(onClick: () -> Unit = {}) {
     Button(
         onClick = onClick, modifier = Modifier
             .height(50.dp)
-            .width(110.dp)
+            .width(130.dp)
     ) {
         Icon(
             imageVector = Icons.Filled.LocationOn,
@@ -199,7 +199,7 @@ fun FindButton(onClick: () -> Unit = {}) {
     Button(
         onClick = onClick, modifier = Modifier
             .height(50.dp)
-            .width(110.dp)
+            .width(130.dp)
     ) {
         Text(
             "Find",
