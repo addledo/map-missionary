@@ -10,6 +10,7 @@ import com.example.mapmissionary.interfaces.GridRefProvider
 import com.example.mapmissionary.interfaces.LocationSearchProvider
 import com.example.mapmissionary.utilities.DeviceLocationHandler
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -49,9 +50,21 @@ class LocationSearchViewModel @Inject constructor(
         }
     }
 
+    private var searchJob: Job? = null
+    private var lastSearchTerms = ""
+
     fun runLocationSearch(searchTerms: String) {
-        viewModelScope.launch {
-            locations = locationSearchProvider.searchLocationsByKeywords(searchTerms)
+        if (searchTerms.isBlank()) return
+
+        val searchInProgress: Boolean = searchJob?.isActive ?: false
+        val searchTermsHaveChanged = searchTerms != lastSearchTerms
+
+        if (!searchInProgress || searchTermsHaveChanged) {
+            searchJob?.cancel()
+            lastSearchTerms = searchTerms
+            searchJob = viewModelScope.launch {
+                locations = locationSearchProvider.searchLocationsByKeywords(searchTerms)
+            }
         }
     }
 }
