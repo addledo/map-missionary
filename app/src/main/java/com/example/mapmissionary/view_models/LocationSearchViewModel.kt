@@ -8,7 +8,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mapmissionary.data.Location
 import com.example.mapmissionary.interfaces.LocationSearchProvider
-import com.example.mapmissionary.utilities.DeviceLocationHandler
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -17,7 +16,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LocationSearchViewModel @Inject constructor(
-    private val deviceLocationHandler: DeviceLocationHandler,
     private val locationSearchProvider: LocationSearchProvider
 ) : ViewModel() {
 
@@ -25,26 +23,6 @@ class LocationSearchViewModel @Inject constructor(
 
     var locations by mutableStateOf(listOf<Location>())
         private set
-
-    fun hasLocationPermission(): Boolean {
-        return deviceLocationHandler.hasPermission()
-    }
-
-    fun fetchAndUpdateLocation(sharedViewModel: SharedViewModel) {
-        sharedViewModel.clearSelectedLocation()
-
-        viewModelScope.launch {
-            val currentLocation = deviceLocationHandler.getLocation()?.copy(
-            )
-
-            if (currentLocation == null) {
-                sharedViewModel.updateSelectedLocation(Location.empty())
-            } else {
-                sharedViewModel.updateSelectedLocation(currentLocation)
-            }
-        }
-    }
-
 
     private var searchJob: Job? = null
     private var lastSearchTerms = ""

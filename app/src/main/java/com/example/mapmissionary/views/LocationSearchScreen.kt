@@ -1,8 +1,5 @@
 package com.example.mapmissionary.views
 
-import android.Manifest
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -54,9 +51,10 @@ fun LocationSearchScreen(navController: NavController?) {
         navController?.navigate("location_details")
     }
 
-    val locationPermissionResultLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestPermission(),
-        onResult = {})
+
+    fun onClickCurrentLocation() {
+            navController?.navigate("current_location")
+    }
 
     if (viewModel.errorMessage != null) {
         InfoDialog(
@@ -95,14 +93,7 @@ fun LocationSearchScreen(navController: NavController?) {
                 .padding(bottom = 40.dp)
                 .padding(top = 30.dp)
         ) {
-            CurrentLocationButton {
-                locationPermissionResultLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
-
-                if (viewModel.hasLocationPermission()) {
-                    viewModel.fetchAndUpdateLocation(sharedViewModel)
-                    navController?.navigate("current_location")
-                }
-            }
+            CurrentLocationButton { onClickCurrentLocation() }
             FindButton {
                 viewModel.runLocationSearch(userInput)
             }

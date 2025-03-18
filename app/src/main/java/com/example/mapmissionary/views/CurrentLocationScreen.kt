@@ -1,5 +1,8 @@
 package com.example.mapmissionary.views
 
+import android.Manifest
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,17 +18,26 @@ import com.example.mapmissionary.shared_composables.BackButton
 import com.example.mapmissionary.shared_composables.LocationField
 import com.example.mapmissionary.shared_composables.PageTitle
 import com.example.mapmissionary.view_models.CurrentLocationViewModel
-import com.example.mapmissionary.view_models.SharedViewModel
 
 @Composable
 fun CurrentLocationScreen(navController: NavController?) {
-    val sharedViewModel = hiltViewModel<SharedViewModel>()
     val viewModel = hiltViewModel<CurrentLocationViewModel>()
 
-    LaunchedEffect(key1 = sharedViewModel.selectedLocation.coordinates) {
-        viewModel.updateGridRef(sharedViewModel)
-    }
+    val locationPermissionResultLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+        onResult = { granted ->
+            if (granted) {
+                viewModel.fetchAndUpdateLocation()
+            }
+        })
 
+    LaunchedEffect(Unit) {
+        if (!viewModel.hasLocationPermission()) {
+            locationPermissionResultLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+        } else {
+            viewModel.fetchAndUpdateLocation()
+        }
+    }
 
 
     Column(
@@ -37,13 +49,15 @@ fun CurrentLocationScreen(navController: NavController?) {
             )
     ) {
         PageTitle("Current Location")
-        LocationField("Grid Reference", sharedViewModel.selectedLocation.gridRef ?: "loading...")
-        LocationField( "Coordinates", sharedViewModel.selectedLocation.coordinates?.toString() ?: "loading..." )
+        LocationField("Grid Reference", viewModel.location.gridRef ?: "loading...")
+        LocationField(
+            "Coordinates",
+            viewModel.location.coordinates?.toString() ?: "loading..."
+        )
         Spacer(modifier = Modifier.weight(1F))
         BackButton(navController)
     }
 }
-
 
 
 @Preview(showBackground = true)

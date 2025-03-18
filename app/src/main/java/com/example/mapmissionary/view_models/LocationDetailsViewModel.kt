@@ -25,5 +25,4 @@ class LocationDetailsViewModel @Inject constructor(
             sharedViewModel.updateSelectedLocation(updatedLocation)
         }
     }
-
 }
