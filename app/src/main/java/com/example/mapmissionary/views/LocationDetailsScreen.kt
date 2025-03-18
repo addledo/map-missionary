@@ -12,6 +12,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.mapmissionary.shared_composables.BackButton
+import com.example.mapmissionary.shared_composables.InfoDialog
 import com.example.mapmissionary.shared_composables.LocationField
 import com.example.mapmissionary.shared_composables.PageTitle
 import com.example.mapmissionary.view_models.LocationDetailsViewModel
@@ -21,6 +22,14 @@ import com.example.mapmissionary.view_models.SharedViewModel
 fun LocationDetailsScreen(navController: NavController?) {
     val sharedViewModel = hiltViewModel<SharedViewModel>()
     val viewModel = hiltViewModel<LocationDetailsViewModel>()
+
+    if (viewModel.errorMessage != null) {
+        InfoDialog(
+            title = "Information",
+            message = viewModel.errorMessage ?: "A problem occurred",
+            onDismiss = { viewModel.errorMessage = null }
+        )
+    }
 
     LaunchedEffect(Unit) {
             viewModel.updateLatLong(sharedViewModel)

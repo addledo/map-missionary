@@ -1,5 +1,8 @@
 package com.example.mapmissionary.view_models
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mapmissionary.interfaces.LatLongProvider
@@ -12,6 +15,7 @@ class LocationDetailsViewModel @Inject constructor(
     private val latLongProvider: LatLongProvider,
 ) :
     ViewModel() {
+    var errorMessage by mutableStateOf<String?>(null)
 
     fun updateLatLong(sharedViewModel: SharedViewModel) {
         val gridRef = sharedViewModel.selectedLocation.gridRef ?: return
@@ -20,9 +24,13 @@ class LocationDetailsViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            val latLong = latLongProvider.getLatLongFromGridRef(gridRef)
-            val updatedLocation = sharedViewModel.selectedLocation.copy(latLong = latLong)
-            sharedViewModel.updateSelectedLocation(updatedLocation)
+            try {
+                val latLong = latLongProvider.getLatLongFromGridRef(gridRef)
+                val updatedLocation = sharedViewModel.selectedLocation.copy(latLong = latLong)
+                sharedViewModel.updateSelectedLocation(updatedLocation)
+            } catch (e: Exception) {
+                errorMessage = e.toString()
+            }
         }
     }
 }

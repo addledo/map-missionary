@@ -35,9 +35,13 @@ class GeoDojoService @Inject constructor(private val networkRepository: NetworkR
 
         val latLongStr = GeoDojoJsonParser.parseGridApiJson(resultJSON, "latlng")
             ?: return null
-        return LatLong(
-            lat = latLongStr.substringBefore(" ").toDouble(),
-            long = latLongStr.substringAfter(" ").toDouble()
-        )
+        try {
+            return LatLong(
+                lat = latLongStr.substringBefore(" ").toDouble(),
+                long = latLongStr.substringAfter(" ").toDouble()
+            )
+        } catch (e: Exception) {
+            throw Exception("There was a problem converting the grid reference to a coordinate value")
+        }
     }
 }
