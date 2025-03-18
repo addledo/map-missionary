@@ -44,7 +44,7 @@ import com.example.mapmissionary.view_models.SharedViewModel
 fun LocationSearchScreen(navController: NavController?) {
     val sharedViewModel = hiltViewModel<SharedViewModel>()
     val viewModel = hiltViewModel<LocationSearchViewModel>()
-    var userInput by remember { mutableStateOf("Plas y Brenin") }
+    var userInput by remember { mutableStateOf("") }
 
     val onLocationSelected: (Location) -> Unit = { location ->
         sharedViewModel.updateSelectedLocation(location)
