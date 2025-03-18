@@ -1,6 +1,5 @@
 package com.example.mapmissionary.view_models
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -43,7 +42,6 @@ class LocationSearchViewModel @Inject constructor(
                 try {
                     locations = locationSearchProvider.searchLocationsByKeywords(searchTerms)
                 } catch (e: Exception) {
-                    Log.d("search_vm", e.toString())
                     errorMessage = e.toString()
                 }
             }
