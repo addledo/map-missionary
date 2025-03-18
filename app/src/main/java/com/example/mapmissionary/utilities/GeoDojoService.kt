@@ -1,7 +1,5 @@
 package com.example.mapmissionary.utilities
 
-import com.example.mapmissionary.GeoDojoJsonParser
-import com.example.mapmissionary.GeoDojoUrlConfig
 import com.example.mapmissionary.data.LatLong
 import com.example.mapmissionary.data.Location
 import com.example.mapmissionary.interfaces.GridRefProvider
