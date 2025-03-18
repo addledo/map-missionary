@@ -5,7 +5,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.mapmissionary.data.Extra
 import com.example.mapmissionary.data.Location
+import com.example.mapmissionary.interfaces.ExtrasProvider
 import com.example.mapmissionary.interfaces.GridRefProvider
 import com.example.mapmissionary.utilities.DeviceLocationHandler
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -15,6 +17,7 @@ import javax.inject.Inject
 @HiltViewModel
 class CurrentLocationViewModel @Inject constructor(
     private val gridRefProvider: GridRefProvider,
+    private val extrasProvider: ExtrasProvider,
     private val deviceLocationHandler: DeviceLocationHandler
 ) : ViewModel() {
     var errorMessage by mutableStateOf<String?>(null)
@@ -36,7 +39,11 @@ class CurrentLocationViewModel @Inject constructor(
             } catch (e: Exception) {
                 errorMessage = e.toString()
             }
-        }.apply { invokeOnCompletion { updateGridRef() } }
+        }.apply { invokeOnCompletion {
+            updateGridRef()
+            getExtras()
+
+        } }
     }
 
     fun hasLocationPermission(): Boolean {
@@ -44,7 +51,7 @@ class CurrentLocationViewModel @Inject constructor(
     }
 
 
-    fun updateGridRef() {
+    private fun updateGridRef() {
         val latLong = location.latLong ?: return
         if (location.gridRef != null) {
             return
@@ -54,6 +61,28 @@ class CurrentLocationViewModel @Inject constructor(
             try {
                 val gridRef = gridRefProvider.getGridFromLatLong(latLong)
                 val updatedLocation = location.copy(gridRef = gridRef)
+                location = updatedLocation
+            } catch (e: Exception) {
+                errorMessage = e.toString()
+            }
+        }
+    }
+
+    private fun getExtras() {
+        val latLong = location.latLong ?: return
+
+        val extrasToRequest = listOf(
+            Extra.County,
+            Extra.PostcodeCenter,
+            Extra.PoliceForce,
+            Extra.Country,
+        )
+
+
+        viewModelScope.launch {
+            try {
+                val extras = extrasProvider.getExtras(latLong, extrasToRequest)
+                val updatedLocation = location.copy(extras = extras)
                 location = updatedLocation
             } catch (e: Exception) {
                 errorMessage = e.toString()

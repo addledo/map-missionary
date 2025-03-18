@@ -64,4 +64,33 @@ object GeoDojoJsonParser {
             return null
         }
     }
+
+
+
+    // Note - despite some duplicate logic, this function is kept separate from the above because
+    // they use different endpoints. This way, if one changes, it won't break the other
+
+    fun parseExtrasJson(fieldName: String, jsonString: String): String? {
+        // EXAMPLE OF API RESPONSE
+//        {
+//            "location": "SH100000",
+//            "result": {
+//            "police-force-area": "North Wales",
+//            "police-force-area-distance": 20087,
+//            "police-force-area-location": "SH1099620062",
+//            "police-force-area-location-distance": 20087,
+//            "postcode-centre": "LL53 8DE",
+//            "postcode-centre-distance": 22023,
+//            "postcode-centre-location": "SH1186121945",
+//            "postcode-centre-location-distance": 22023
+//        }
+        try {
+            val json = JSONObject(jsonString)
+            val resultJsonObj = json.getJSONObject("result")
+            val fieldValue = resultJsonObj.get(fieldName).toString()
+            return fieldValue
+        } catch (e: JSONException) {
+            return null
+        }
+    }
 }

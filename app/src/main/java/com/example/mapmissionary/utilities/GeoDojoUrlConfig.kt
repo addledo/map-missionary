@@ -1,6 +1,7 @@
 package com.example.mapmissionary.utilities
 
 import android.util.Log
+import com.example.mapmissionary.data.Extra
 import com.example.mapmissionary.data.LatLong
 
 object GeoDojoUrlConfig {
@@ -60,20 +61,15 @@ object GeoDojoUrlConfig {
     }
 
 
-    fun getExtraDetailsFromGridRefUrl(gridRef: String): String {
+    fun getExtraDetailsFromLatLongRefUrl(latLong: LatLong, keys: List<Extra>): String {
         val urlBuilder = StringBuilder(NEAREST_INFO_BASE_URL)
         urlBuilder.append("?q=")
-        urlBuilder.append(gridRef)
+        urlBuilder.append(latLong)
 
-        // Fields to request from the API
-        urlBuilder.append("&type[]=")
-        urlBuilder.append("police-force-area")
-
-        urlBuilder.append("&type[]=")
-        urlBuilder.append("county-unitary-authority")
-
-        urlBuilder.append("&type[]=")
-        urlBuilder.append("postcode-centre")
+        keys.forEach() {
+            urlBuilder.append("&type[]=")
+            urlBuilder.append(it.apiName)
+        }
 
         val url = urlBuilder.toString()
         Log.i("url", url)

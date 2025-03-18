@@ -2,6 +2,7 @@ package com.example.mapmissionary.di
 
 import android.content.Context
 import com.example.mapmissionary.data.Location
+import com.example.mapmissionary.interfaces.ExtrasProvider
 import com.example.mapmissionary.interfaces.GridRefProvider
 import com.example.mapmissionary.interfaces.LatLongProvider
 import com.example.mapmissionary.interfaces.LocationSearchProvider
@@ -64,6 +65,12 @@ object AppModule {
     @Provides
     @Singleton
     fun provideLocationSearchProvider(geoDojoService: GeoDojoService): LocationSearchProvider {
+        return geoDojoService
+    }
+
+    @Provides
+    @Singleton
+    fun provideExtrasProvider(geoDojoService: GeoDojoService): ExtrasProvider {
         return geoDojoService
     }
 }

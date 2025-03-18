@@ -61,10 +61,14 @@ fun CurrentLocationScreen(navController: NavController?) {
     ) {
         PageTitle("Current Location")
         LocationField("Grid Reference", viewModel.location.gridRef ?: "loading...")
-        LocationField("Coordinates", viewModel.location.latLong?.toString() ?: "loading...")
 
         LazyColumn(modifier = Modifier
-            .weight(1F)) {
+            .weight(1F)
+            .padding(bottom = 15.dp, top = 10.dp)
+        ) {
+            item {
+                LocationField("Coordinates", viewModel.location.latLong?.toString() ?: "loading...")
+            }
             itemsIndexed(viewModel.location.extras) { _, field ->
                 LocationField(field.first, field.second)
             }

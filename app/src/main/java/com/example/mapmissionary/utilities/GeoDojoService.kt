@@ -1,14 +1,16 @@
 package com.example.mapmissionary.utilities
 
+import com.example.mapmissionary.data.Extra
 import com.example.mapmissionary.data.LatLong
 import com.example.mapmissionary.data.Location
+import com.example.mapmissionary.interfaces.ExtrasProvider
 import com.example.mapmissionary.interfaces.GridRefProvider
 import com.example.mapmissionary.interfaces.LatLongProvider
 import com.example.mapmissionary.interfaces.LocationSearchProvider
 import javax.inject.Inject
 
 class GeoDojoService @Inject constructor(private val networkRepository: NetworkRepository) :
-    GridRefProvider, LatLongProvider, LocationSearchProvider {
+    GridRefProvider, LatLongProvider, LocationSearchProvider, ExtrasProvider {
 
     override suspend fun searchLocationsByKeywords(keyWords: String): List<Location> {
         val validatedKeyWords = PostcodeValidator.validate(keyWords)
@@ -44,4 +46,23 @@ class GeoDojoService @Inject constructor(private val networkRepository: NetworkR
             throw Exception("There was a problem converting the grid reference to a coordinate value")
         }
     }
+
+    override suspend fun getExtras(latLong: LatLong?, extrasToGet: List<Extra>): List<Pair<String, String>> {
+        if (latLong == null) {
+            return listOf()
+        }
+
+        val url = GeoDojoUrlConfig.getExtraDetailsFromLatLongRefUrl(latLong, extrasToGet)
+        val resultJSON = networkRepository.fetchData(url) ?: return listOf()
+
+        val extras = mutableListOf<Pair<String, String>>()
+        extrasToGet.forEach {
+            val extra = GeoDojoJsonParser.parseExtrasJson(it.apiName, resultJSON)
+            if (extra != null) {
+                extras.add(it.name to extra)
+            }
+        }
+        return extras.toList()
+    }
+
 }
