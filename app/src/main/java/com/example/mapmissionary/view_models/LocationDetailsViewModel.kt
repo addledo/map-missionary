@@ -15,9 +15,9 @@ class LocationDetailsViewModel @Inject constructor(
 
     fun updateLatLong(sharedViewModel: SharedViewModel) {
         val gridRef = sharedViewModel.selectedLocation.gridRef ?: return
-//        if (sharedViewModel.selectedLocation.coordinates != null) {
-//            return
-//        }
+        if (sharedViewModel.selectedLocation.coordinates != null) {
+            return
+        }
 
         viewModelScope.launch {
             val latLong = latLongProvider.getLatLongFromGridRef(gridRef)
