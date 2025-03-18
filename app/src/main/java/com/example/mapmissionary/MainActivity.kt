@@ -8,6 +8,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.mapmissionary.ui.theme.MapMissionaryTheme
+import com.example.mapmissionary.views.CurrentLocationScreen
 import com.example.mapmissionary.views.LocationDetailsScreen
 import com.example.mapmissionary.views.LocationSearchScreen
 import dagger.hilt.android.AndroidEntryPoint
@@ -34,5 +35,6 @@ fun AppNavigation() {
     NavHost(navController = navController, startDestination = "search") {
         composable("search") { LocationSearchScreen(navController) }
         composable("location_details") { LocationDetailsScreen(navController) }
+        composable("current_location") { CurrentLocationScreen(navController) }
     }
 }

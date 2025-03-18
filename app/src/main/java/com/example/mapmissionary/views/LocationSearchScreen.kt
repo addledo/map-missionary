@@ -99,7 +99,7 @@ fun LocationSearchScreen(navController: NavController?) {
 
                 if (viewModel.hasLocationPermission()) {
                     viewModel.fetchAndUpdateLocation(sharedViewModel)
-                    navController?.navigate("location_details")
+                    navController?.navigate("current_location")
                 }
             }
             FindButton {

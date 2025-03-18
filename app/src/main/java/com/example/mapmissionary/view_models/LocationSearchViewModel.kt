@@ -7,7 +7,6 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mapmissionary.data.Location
-import com.example.mapmissionary.interfaces.GridRefProvider
 import com.example.mapmissionary.interfaces.LocationSearchProvider
 import com.example.mapmissionary.utilities.DeviceLocationHandler
 import dagger.hilt.android.lifecycle.HiltViewModel

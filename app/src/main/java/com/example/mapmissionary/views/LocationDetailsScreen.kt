@@ -29,9 +29,6 @@ fun LocationDetailsScreen(navController: NavController?) {
     val sharedViewModel = hiltViewModel<SharedViewModel>()
     val viewModel = hiltViewModel<LocationDetailsViewModel>()
 
-    LaunchedEffect(key1 = sharedViewModel.selectedLocation.coordinates) {
-            viewModel.updateGridRef(sharedViewModel)
-    }
     LaunchedEffect(Unit) {
             viewModel.updateLatLong(sharedViewModel)
     }
