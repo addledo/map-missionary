@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.mapmissionary.shared_composables.BackButton
+import com.example.mapmissionary.shared_composables.InfoDialog
 import com.example.mapmissionary.shared_composables.LocationField
 import com.example.mapmissionary.shared_composables.PageTitle
 import com.example.mapmissionary.view_models.CurrentLocationViewModel
@@ -22,6 +23,14 @@ import com.example.mapmissionary.view_models.CurrentLocationViewModel
 @Composable
 fun CurrentLocationScreen(navController: NavController?) {
     val viewModel = hiltViewModel<CurrentLocationViewModel>()
+
+    if (viewModel.errorMessage != null) {
+        InfoDialog(
+            title = "Information",
+            message = viewModel.errorMessage ?: "A problem occurred",
+            onDismiss = { viewModel.errorMessage = null }
+        )
+    }
 
     val locationPermissionResultLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission(),
@@ -72,12 +81,9 @@ private fun ScreenPreview() {
             )
     ) {
         PageTitle("Current Location")
-
         LocationField("Grid Reference", "No location")
         LocationField("Coordinates", "No location")
-
         Spacer(modifier = Modifier.weight(1F))
-
         BackButton(null)
     }
 }

@@ -17,6 +17,7 @@ class CurrentLocationViewModel @Inject constructor(
     private val gridRefProvider: GridRefProvider,
     private val deviceLocationHandler: DeviceLocationHandler
 ) : ViewModel() {
+    var errorMessage by mutableStateOf<String?>(null)
 
     var location by mutableStateOf(Location())
         private set
@@ -46,9 +47,13 @@ class CurrentLocationViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            val gridRef = gridRefProvider.getGridFromLatLong(latLong)
-            val updatedLocation = location.copy(gridRef = gridRef)
-            location = updatedLocation
+            try {
+                val gridRef = gridRefProvider.getGridFromLatLong(latLong)
+                val updatedLocation = location.copy(gridRef = gridRef)
+                location = updatedLocation
+            } catch (e: Exception) {
+                errorMessage = e.toString()
+            }
         }
     }
 }
