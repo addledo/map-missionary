@@ -14,7 +14,15 @@ import androidx.navigation.NavController
 @Composable
 fun BackButton(navController: NavController?) {
     Button(
-        onClick = { navController?.popBackStack() },
+        onClick = {
+            // The arguments to this function prevent navigating to a blank screen as a result
+            // of multiple successive button clicks. This can happen by accident during the
+            // transition between pages.
+            // The function will pop off the navigation stack until it reaches the specified
+            // screen. The false argument makes this uninclusive, so the specified screen will not
+            // also be popped.
+            navController?.popBackStack("search", false)
+                  },
         modifier = Modifier
             .fillMaxWidth()
             .padding(bottom = 20.dp)
