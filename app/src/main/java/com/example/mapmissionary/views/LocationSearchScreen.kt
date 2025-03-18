@@ -18,7 +18,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
@@ -28,6 +27,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextStyle
@@ -38,18 +38,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.example.mapmissionary.shared_composables.InfoDialog
 import com.example.mapmissionary.data.Location
+import com.example.mapmissionary.shared_composables.InfoDialog
 import com.example.mapmissionary.view_models.LocationSearchViewModel
 import com.example.mapmissionary.view_models.SharedViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LocationSearchScreen(navController: NavController?) {
-
     val sharedViewModel = hiltViewModel<SharedViewModel>()
     val viewModel = hiltViewModel<LocationSearchViewModel>()
-
     var userInput by remember { mutableStateOf("Plas y Brenin") }
 
     val onLocationSelected: (Location) -> Unit = { location ->
@@ -61,7 +58,6 @@ fun LocationSearchScreen(navController: NavController?) {
         contract = ActivityResultContracts.RequestPermission(),
         onResult = {})
 
-
     if (viewModel.errorMessage != null) {
         InfoDialog(
             title = "Information",
@@ -69,6 +65,8 @@ fun LocationSearchScreen(navController: NavController?) {
             onDismiss = { viewModel.errorMessage = null }
         )
     }
+
+
 
 
 
@@ -88,14 +86,17 @@ fun LocationSearchScreen(navController: NavController?) {
         )
 
         Row(
-            horizontalArrangement = Arrangement.SpaceAround,
+            horizontalArrangement = Arrangement.spacedBy(
+                40.dp,
+                alignment = Alignment.CenterHorizontally
+            ),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 40.dp)
                 .padding(top = 30.dp)
         ) {
             CurrentLocationButton {
-                    locationPermissionResultLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+                locationPermissionResultLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
 
                 if (viewModel.hasLocationPermission()) {
                     viewModel.fetchAndUpdateLocation(sharedViewModel)
@@ -108,7 +109,6 @@ fun LocationSearchScreen(navController: NavController?) {
         }
     }
 }
-
 
 
 @Composable
@@ -185,12 +185,19 @@ fun UserInputBox(
 
 
 @Composable
-fun CurrentLocationButton(onClick: () -> Unit = {}) {
+fun MyButton(onClick: () -> Unit = {}, content: @Composable () -> Unit) {
     Button(
         onClick = onClick, modifier = Modifier
             .height(50.dp)
             .width(130.dp)
     ) {
+        content()
+    }
+}
+
+@Composable
+fun CurrentLocationButton(onClick: () -> Unit = {}) {
+    MyButton(onClick = onClick) {
         Icon(
             imageVector = Icons.Filled.LocationOn,
             contentDescription = "Location icon",
@@ -200,11 +207,7 @@ fun CurrentLocationButton(onClick: () -> Unit = {}) {
 
 @Composable
 fun FindButton(onClick: () -> Unit = {}) {
-    Button(
-        onClick = onClick, modifier = Modifier
-            .height(50.dp)
-            .width(130.dp)
-    ) {
+    MyButton(onClick = onClick) {
         Text(
             "Find",
             fontSize = 20.sp,
@@ -229,7 +232,10 @@ fun LocationSearchScreenPrev() {
         ) {}
 
         Row(
-            horizontalArrangement = Arrangement.SpaceAround,
+            horizontalArrangement = Arrangement.spacedBy(
+                40.dp,
+                alignment = Alignment.CenterHorizontally
+            ),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 40.dp)
