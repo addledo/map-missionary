@@ -6,9 +6,11 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
@@ -51,6 +53,7 @@ fun CurrentLocationScreen(navController: NavController?) {
     }
 
 
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -61,19 +64,19 @@ fun CurrentLocationScreen(navController: NavController?) {
     ) {
         PageTitle("Current Location")
         LocationField("Grid Reference", viewModel.location.gridRef ?: "loading...")
-
-        LazyColumn(modifier = Modifier
-            .weight(1F)
-            .padding(bottom = 15.dp, top = 10.dp)
-        ) {
+        HorizontalDivider(thickness = 2.dp, modifier = Modifier.padding(top = 18.dp))
+        LazyColumn(modifier = Modifier.weight(1F)) {
             item {
                 LocationField("Coordinates", viewModel.location.latLong?.toString() ?: "loading...")
             }
             itemsIndexed(viewModel.location.extras) { _, field ->
                 LocationField(field.first, field.second)
             }
+            item {
+                Spacer(modifier = Modifier.height(25.dp))
+            }
         }
-
+        HorizontalDivider(thickness = 2.dp, modifier = Modifier.padding(bottom = 15.dp))
         BackButton(navController)
     }
 }
