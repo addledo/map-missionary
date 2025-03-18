@@ -30,8 +30,12 @@ class CurrentLocationViewModel @Inject constructor(
         clearLocation()
 
         viewModelScope.launch {
-            val currentLocation = deviceLocationHandler.getLocation() ?: return@launch
-            location = currentLocation
+            try {
+                val currentLocation = deviceLocationHandler.getLocation() ?: return@launch
+                location = currentLocation
+            } catch (e: Exception) {
+                errorMessage = e.toString()
+            }
         }.apply { invokeOnCompletion { updateGridRef() } }
     }
 

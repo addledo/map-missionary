@@ -24,8 +24,17 @@ class DeviceLocationHandler(private val context: Context) {
             null
         ).await()
 
+        val lat: Double? = currentLocation?.latitude
+        val long: Double? = currentLocation?.longitude
+
+        if (lat == null || long == null) {
+            throw Exception(
+                "There was a problem getting your location. Are you sure you have location services turned on?"
+            )
+        }
+
         return Location(
-            latLong = LatLong(currentLocation.latitude, currentLocation.longitude)
+            latLong = LatLong(lat, long)
         )
 
     }
