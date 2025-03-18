@@ -10,8 +10,8 @@ import com.google.android.gms.location.Priority
 import kotlinx.coroutines.tasks.await
 
 class DeviceLocationHandler(private val context: Context) {
-
     private val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
+
 
     @SuppressLint("MissingPermission")
     suspend fun getLocation(): Location? {
@@ -24,19 +24,15 @@ class DeviceLocationHandler(private val context: Context) {
             null
         ).await()
 
-        val lat: Double? = currentLocation?.latitude
-        val long: Double? = currentLocation?.longitude
-
-        if (lat == null || long == null) {
+        if (currentLocation == null) {
             throw Exception(
                 "There was a problem getting your location. Are you sure you have location services turned on?"
             )
         }
 
         return Location(
-            latLong = LatLong(lat, long)
+            latLong = LatLong(currentLocation.latitude, currentLocation.longitude)
         )
-
     }
 
     fun hasPermission(): Boolean {
