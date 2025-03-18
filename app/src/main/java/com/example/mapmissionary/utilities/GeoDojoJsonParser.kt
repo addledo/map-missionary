@@ -25,8 +25,8 @@ object GeoDojoJsonParser {
                 locations.add(
                     Location(
                         address = locationObj.get("location").toString(),
-                        // TODO Add "place result as town"
-                        gridRef = locationObj.get("grid").toString()
+                        gridRef = locationObj.get("grid").toString(),
+                        town = locationObj.get("place").toString()
                     )
                 )
             }

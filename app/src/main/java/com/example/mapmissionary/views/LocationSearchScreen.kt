@@ -143,6 +143,9 @@ fun formatLocationCardText(location: Location): String {
     builder.append(location.address ?: "Address not found")
     builder.append(newLine)
     builder.append(location.gridRef ?: "Grid reference not found")
+    builder.append(newLine)
+    builder.append(location.town)
+
     return builder.toString()
 }
 
