@@ -20,5 +20,6 @@ fun PageTitle(text: String) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 30.dp)
+            .padding(bottom = 10.dp)
     )
 }

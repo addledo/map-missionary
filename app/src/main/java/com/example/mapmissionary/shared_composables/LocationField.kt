@@ -29,7 +29,7 @@ fun CardTitle(title: String) {
         fontSize = 25.sp,
         fontWeight = FontWeight.Medium,
         modifier = Modifier
-            .padding(top = 30.dp)
+            .padding(top = 20.dp)
     )
 }
 
@@ -39,7 +39,7 @@ fun DetailCard(content: String) {
     OutlinedCard(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 7.dp),
+            .padding(top = 7.dp),
         onClick = { clipboardManager.setText(AnnotatedString(content)) }
     ) {
         Text(

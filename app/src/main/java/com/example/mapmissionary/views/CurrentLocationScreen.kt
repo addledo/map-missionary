@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
@@ -59,11 +61,15 @@ fun CurrentLocationScreen(navController: NavController?) {
     ) {
         PageTitle("Current Location")
         LocationField("Grid Reference", viewModel.location.gridRef ?: "loading...")
-        LocationField(
-            "Coordinates",
-            viewModel.location.latLong?.toString() ?: "loading..."
-        )
-        Spacer(modifier = Modifier.weight(1F))
+        LocationField("Coordinates", viewModel.location.latLong?.toString() ?: "loading...")
+
+        LazyColumn(modifier = Modifier
+            .weight(1F)) {
+            itemsIndexed(viewModel.location.extras) { _, field ->
+                LocationField(field.first, field.second)
+            }
+        }
+
         BackButton(navController)
     }
 }
@@ -83,6 +89,9 @@ private fun ScreenPreview() {
         PageTitle("Current Location")
         LocationField("Grid Reference", "No location")
         LocationField("Coordinates", "No location")
+        for (i in 1..4) {
+            LocationField("Field", "Content")
+        }
         Spacer(modifier = Modifier.weight(1F))
         BackButton(null)
     }
