@@ -12,7 +12,11 @@ import java.util.Scanner
 
 class NetworkRepository {
     private val debugTag = "network_repo"
-    suspend fun fetchData(urlString: String, connectTimeout: Int = 5, readTimeout: Int = 5): String? {
+    suspend fun fetchData(
+        urlString: String,
+        connectTimeout: Int = 5,
+        readTimeout: Int = 5
+    ): String? {
 
         return withContext(Dispatchers.IO) {
             val url = URL(urlString)
@@ -31,7 +35,6 @@ class NetworkRepository {
                     Log.d(debugTag, "HTTP Connection successful")
                     val scanner = Scanner(connection.inputStream).useDelimiter("\\A")
                     val response = if (scanner.hasNext()) scanner.next() else ""
-//                    Log.d(debugTag, "Result: ${System.lineSeparator()}$response")
                     return@withContext response
 
                 } else {
@@ -44,7 +47,7 @@ class NetworkRepository {
                     return@withContext null
                 }
                 Log.d(debugTag, "Caught IO Exception: $e")
-                return@withContext null
+                throw Exception("Something went wrong - are you sure you're connected to the internet?")
             }
         }
     }

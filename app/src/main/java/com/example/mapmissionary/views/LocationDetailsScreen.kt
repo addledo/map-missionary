@@ -29,12 +29,11 @@ fun LocationDetailsScreen(navController: NavController?) {
     val sharedViewModel = hiltViewModel<SharedViewModel>()
     val viewModel = hiltViewModel<LocationDetailsViewModel>()
 
-    if (sharedViewModel.selectedLocation.gridRef != null
-        && sharedViewModel.selectedLocation.coordinates == null
-    ) {
-        LaunchedEffect(Unit) {
+    LaunchedEffect(key1 = sharedViewModel.selectedLocation.coordinates) {
+            viewModel.updateGridRef(sharedViewModel)
+    }
+    LaunchedEffect(Unit) {
             viewModel.updateLatLong(sharedViewModel)
-        }
     }
 
     Column(
@@ -48,7 +47,7 @@ fun LocationDetailsScreen(navController: NavController?) {
         ScreenTitle("Location")
 
         CardTitle("Address")
-        DetailCard(sharedViewModel.selectedLocation.address ?: "Not found")
+        DetailCard(sharedViewModel.selectedLocation.address ?: "Unavailable")
 
         CardTitle("Grid Reference")
         DetailCard(sharedViewModel.selectedLocation.gridRef ?: "loading...")

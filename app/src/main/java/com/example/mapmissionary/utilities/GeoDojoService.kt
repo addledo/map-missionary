@@ -32,7 +32,6 @@ class GeoDojoService @Inject constructor(private val networkRepository: NetworkR
         if (gridRef.isBlank()) {
             return null
         }
-
         val url = GeoDojoUrlConfig.getLatLongFromGridUrl(gridRef)
         val resultJSON = networkRepository.fetchData(url) ?: return null
 

@@ -19,13 +19,11 @@ import javax.inject.Inject
 @HiltViewModel
 class LocationSearchViewModel @Inject constructor(
     private val deviceLocationHandler: DeviceLocationHandler,
-    private val gridRefProvider: GridRefProvider,
     private val locationSearchProvider: LocationSearchProvider
 ) : ViewModel() {
 
-    init {
-        Log.d("vm", "Initialising search vm")
-    }
+    var errorMessage by mutableStateOf<String?>(null)
+
     var locations by mutableStateOf(listOf<Location>())
         private set
 
@@ -34,38 +32,43 @@ class LocationSearchViewModel @Inject constructor(
     }
 
     fun fetchAndUpdateLocation(sharedViewModel: SharedViewModel) {
+        sharedViewModel.clearSelectedLocation()
+
         viewModelScope.launch {
             val currentLocation = deviceLocationHandler.getLocation()?.copy(
-                address = "Unspecified",
-                gridRef = "loading..."
             )
 
             if (currentLocation == null) {
                 sharedViewModel.updateSelectedLocation(Location.empty())
             } else {
                 sharedViewModel.updateSelectedLocation(currentLocation)
-                val gridRef = gridRefProvider.getGridFromLatLong(currentLocation.coordinates)
-                val updatedLocation = currentLocation.copy(gridRef = gridRef)
-
-                sharedViewModel.updateSelectedLocation(updatedLocation)
             }
         }
     }
+
 
     private var searchJob: Job? = null
     private var lastSearchTerms = ""
 
     fun runLocationSearch(searchTerms: String) {
-        if (searchTerms.isBlank()) return
+        if (searchTerms.isBlank()) {
+            return
+        }
 
-        val searchInProgress: Boolean = searchJob?.isActive ?: false
-        val searchTermsHaveChanged = searchTerms != lastSearchTerms
+        val searchInProgress = searchJob?.isActive ?: false
+        val newSearchTerms = searchTerms != lastSearchTerms
 
-        if (!searchInProgress || searchTermsHaveChanged) {
+        if (!searchInProgress || newSearchTerms) {
             searchJob?.cancel()
             lastSearchTerms = searchTerms
+
             searchJob = viewModelScope.launch {
-                locations = locationSearchProvider.searchLocationsByKeywords(searchTerms)
+                try {
+                    locations = locationSearchProvider.searchLocationsByKeywords(searchTerms)
+                } catch (e: Exception) {
+                    Log.d("search_vm", e.toString())
+                    errorMessage = e.toString()
+                }
             }
         }
     }

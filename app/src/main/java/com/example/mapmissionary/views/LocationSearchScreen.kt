@@ -18,6 +18,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
@@ -37,10 +38,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.example.mapmissionary.InfoDialog
 import com.example.mapmissionary.data.Location
 import com.example.mapmissionary.view_models.LocationSearchViewModel
 import com.example.mapmissionary.view_models.SharedViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LocationSearchScreen(navController: NavController?) {
 
@@ -59,6 +62,13 @@ fun LocationSearchScreen(navController: NavController?) {
         onResult = {})
 
 
+    if (viewModel.errorMessage != null) {
+        InfoDialog(
+            title = "Information",
+            message = viewModel.errorMessage ?: "A problem occurred",
+            onDismiss = { viewModel.errorMessage = null }
+        )
+    }
 
 
 
@@ -85,18 +95,11 @@ fun LocationSearchScreen(navController: NavController?) {
                 .padding(top = 30.dp)
         ) {
             CurrentLocationButton {
-                locationPermissionResultLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+                    locationPermissionResultLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
 
                 if (viewModel.hasLocationPermission()) {
-                    sharedViewModel.updateSelectedLocation(
-                        Location(
-                            address = "Unspecified",
-                            gridRef = null,
-                            coordinates = null
-                        )
-                    )
-                    navController?.navigate("location_details")
                     viewModel.fetchAndUpdateLocation(sharedViewModel)
+                    navController?.navigate("location_details")
                 }
             }
             FindButton {
@@ -105,6 +108,7 @@ fun LocationSearchScreen(navController: NavController?) {
         }
     }
 }
+
 
 
 @Composable
