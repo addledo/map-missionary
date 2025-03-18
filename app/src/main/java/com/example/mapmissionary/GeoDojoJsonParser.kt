@@ -40,7 +40,7 @@ object GeoDojoJsonParser {
     }
 
 
-    fun parseGridApiJson(jsonString: String, type: String): String? {
+    fun parseGridApiJson(jsonString: String, valueKey: String): String? {
 //        The string returned is in this format:
 //        {
 //            "location": "50,1",
@@ -48,17 +48,19 @@ object GeoDojoJsonParser {
 //            "grid": "SV0005000001"
 //        }
 
+//        Where "grid" is the valueKey
+
         try {
             val json = JSONObject(jsonString)
             val resultJsonObj = json.getJSONObject("result")
-            // type should be either "grid" or "latlng"
-            val gridRef = resultJsonObj.get(type).toString()
-
+            val gridRef = resultJsonObj.get(valueKey).toString()
             return gridRef
 
         } catch (e: JSONException) {
-            Log.e("json", "Caught exception in parseGridApiJSON()")
-            Log.e("json", e.toString())
+            Log.e(
+                "json",
+                "Caught exception in parseGridApiJSON() ${System.lineSeparator()} $e"
+            )
             return null
         }
     }
