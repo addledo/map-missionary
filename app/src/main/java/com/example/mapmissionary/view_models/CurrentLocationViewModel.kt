@@ -41,7 +41,7 @@ class CurrentLocationViewModel @Inject constructor(
 
 
     fun updateGridRef() {
-        val latLong = location.coordinates ?: return
+        val latLong = location.latLong ?: return
         if (location.gridRef != null) {
             return
         }

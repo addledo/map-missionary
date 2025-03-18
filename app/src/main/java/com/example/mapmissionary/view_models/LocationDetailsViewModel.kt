@@ -15,13 +15,13 @@ class LocationDetailsViewModel @Inject constructor(
 
     fun updateLatLong(sharedViewModel: SharedViewModel) {
         val gridRef = sharedViewModel.selectedLocation.gridRef ?: return
-        if (sharedViewModel.selectedLocation.coordinates != null) {
+        if (sharedViewModel.selectedLocation.latLong != null) {
             return
         }
 
         viewModelScope.launch {
             val latLong = latLongProvider.getLatLongFromGridRef(gridRef)
-            val updatedLocation = sharedViewModel.selectedLocation.copy(coordinates = latLong)
+            val updatedLocation = sharedViewModel.selectedLocation.copy(latLong = latLong)
             sharedViewModel.updateSelectedLocation(updatedLocation)
         }
     }

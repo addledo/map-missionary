@@ -38,7 +38,7 @@ fun LocationDetailsScreen(navController: NavController?) {
         PageTitle("Location")
         LocationField("Address", sharedViewModel.selectedLocation.address ?: "Unavailable")
         LocationField("Grid Reference", sharedViewModel.selectedLocation.gridRef ?: "Unavailable")
-        LocationField("Coordinates", sharedViewModel.selectedLocation.coordinates?.toString() ?: "loading...")
+        LocationField("Coordinates", sharedViewModel.selectedLocation.latLong?.toString() ?: "loading...")
         Spacer(modifier = Modifier.weight(1F))
         BackButton(navController)
     }

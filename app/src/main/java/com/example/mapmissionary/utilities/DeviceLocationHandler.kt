@@ -25,7 +25,7 @@ class DeviceLocationHandler(private val context: Context) {
         ).await()
 
         return Location(
-            coordinates = LatLong(currentLocation.latitude, currentLocation.longitude)
+            latLong = LatLong(currentLocation.latitude, currentLocation.longitude)
         )
 
     }

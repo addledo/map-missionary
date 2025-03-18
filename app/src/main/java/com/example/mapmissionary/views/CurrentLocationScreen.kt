@@ -61,7 +61,7 @@ fun CurrentLocationScreen(navController: NavController?) {
         LocationField("Grid Reference", viewModel.location.gridRef ?: "loading...")
         LocationField(
             "Coordinates",
-            viewModel.location.coordinates?.toString() ?: "loading..."
+            viewModel.location.latLong?.toString() ?: "loading..."
         )
         Spacer(modifier = Modifier.weight(1F))
         BackButton(navController)
