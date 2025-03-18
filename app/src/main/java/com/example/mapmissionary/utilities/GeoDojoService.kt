@@ -24,7 +24,7 @@ class GeoDojoService @Inject constructor(private val networkRepository: NetworkR
             return null
         }
         val url = GeoDojoUrlConfig.getGridFromLatLongUrl(latLong)
-        val resultJSON = networkRepository.fetchData(url) ?: return "Not found"
+        val resultJSON = networkRepository.fetchData(url) ?: return null
         return GeoDojoJsonParser.parseGridApiJson(resultJSON, "grid")
     }
 
