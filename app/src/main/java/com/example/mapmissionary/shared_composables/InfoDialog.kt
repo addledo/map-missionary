@@ -1,4 +1,4 @@
-package com.example.mapmissionary
+package com.example.mapmissionary.shared_composables
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
