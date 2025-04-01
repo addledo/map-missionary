@@ -16,18 +16,20 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import com.example.mapmissionary.shared_composables.BackButton
+import com.example.mapmissionary.shared_composables.GotoGoogleMapsButton
 import com.example.mapmissionary.shared_composables.InfoDialog
 import com.example.mapmissionary.shared_composables.LocationField
 import com.example.mapmissionary.shared_composables.PageTitle
+import com.example.mapmissionary.utilities.GoogleMapsLinkConstructor
 import com.example.mapmissionary.view_models.CurrentLocationViewModel
 
 @Composable
-fun CurrentLocationScreen(navController: NavController?) {
+fun CurrentLocationScreen() {
     val viewModel = hiltViewModel<CurrentLocationViewModel>()
 
     if (viewModel.errorMessage != null) {
@@ -80,7 +82,10 @@ fun CurrentLocationScreen(navController: NavController?) {
             }
         }
         HorizontalDivider(thickness = 2.dp, modifier = Modifier.padding(bottom = 15.dp))
-        BackButton(navController)
+        GotoGoogleMapsButton(
+            LocalContext.current,
+            GoogleMapsLinkConstructor.getLinkFromLatLong(viewModel.location.latLong)
+        )
     }
 }
 

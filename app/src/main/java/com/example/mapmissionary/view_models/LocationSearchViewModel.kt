@@ -26,11 +26,6 @@ class LocationSearchViewModel @Inject constructor(
     private var searchJob: Job? = null
     private var lastSearchTerms = ""
 
-    fun clearLocations() {
-        locations = listOf()
-    }
-
-
     suspend fun runLocationSearch(searchTerms: String): Boolean {
         if (searchTerms.isBlank()) {
             return false

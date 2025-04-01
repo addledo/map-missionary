@@ -15,7 +15,7 @@ fun AppNavigation() {
 
     NavHost(navController = navController, startDestination = "search") {
         composable(route = Screen.Search.route) { LocationSearchScreen(navController) }
-        composable(route = Screen.LocationDetails.route) { LocationDetailsScreen(navController) }
-        composable(route = Screen.CurrentLocation.route) { CurrentLocationScreen(navController) }
+        composable(route = Screen.LocationDetails.route) { LocationDetailsScreen() }
+        composable(route = Screen.CurrentLocation.route) { CurrentLocationScreen() }
     }
 }

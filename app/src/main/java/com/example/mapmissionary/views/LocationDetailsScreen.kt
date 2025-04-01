@@ -9,19 +9,21 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import com.example.mapmissionary.shared_composables.BackButton
+import com.example.mapmissionary.shared_composables.GotoGoogleMapsButton
 import com.example.mapmissionary.shared_composables.InfoDialog
 import com.example.mapmissionary.shared_composables.LocationField
 import com.example.mapmissionary.shared_composables.PageTitle
+import com.example.mapmissionary.utilities.GoogleMapsLinkConstructor
 import com.example.mapmissionary.view_models.LocationDetailsViewModel
 import com.example.mapmissionary.view_models.SharedViewModel
 
 @Composable
-fun LocationDetailsScreen(navController: NavController?) {
+fun LocationDetailsScreen() {
     val sharedViewModel = hiltViewModel<SharedViewModel>()
     val viewModel = hiltViewModel<LocationDetailsViewModel>()
 
@@ -34,7 +36,7 @@ fun LocationDetailsScreen(navController: NavController?) {
     }
 
     LaunchedEffect(Unit) {
-            viewModel.updateLatLong(sharedViewModel)
+        viewModel.updateLatLong(sharedViewModel)
     }
 
 
@@ -54,10 +56,14 @@ fun LocationDetailsScreen(navController: NavController?) {
         LocationField("Grid Reference", sharedViewModel.selectedLocation.gridRef ?: "Unavailable")
         LocationField("Coordinates", sharedViewModel.selectedLocation.latLong?.toString() ?: "loading...")
         Spacer(modifier = Modifier.weight(1F))
-        BackButton(navController)
+        if (sharedViewModel.selectedLocation.latLong != null) {
+            GotoGoogleMapsButton(
+                LocalContext.current,
+                GoogleMapsLinkConstructor.getLinkFromLatLong(sharedViewModel.selectedLocation.latLong)
+            )
+        }
     }
 }
-
 
 
 @Preview(showBackground = true)
