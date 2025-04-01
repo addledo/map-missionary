@@ -54,6 +54,9 @@ fun LocationSearchScreen(navController: NavController?) {
             sharedViewModel.updateSelectedLocation(viewModel.locations.first())
             navController?.navigate(Screen.LocationDetails.route)
         }
+        if (viewModel.locations.isEmpty()) {
+            viewModel.errorMessage = "No results found"
+        }
     }
 
     val onLocationSelected: (Location) -> Unit = { location ->
