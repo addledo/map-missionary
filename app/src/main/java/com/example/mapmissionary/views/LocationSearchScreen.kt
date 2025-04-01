@@ -20,6 +20,7 @@ import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,6 +37,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.mapmissionary.data.Location
+import com.example.mapmissionary.navigation.Screen
 import com.example.mapmissionary.shared_composables.InfoDialog
 import com.example.mapmissionary.view_models.LocationSearchViewModel
 import com.example.mapmissionary.view_models.SharedViewModel
@@ -46,14 +48,21 @@ fun LocationSearchScreen(navController: NavController?) {
     val viewModel = hiltViewModel<LocationSearchViewModel>()
     var userInput by remember { mutableStateOf("") }
 
+    val onSearch = { searchTerms: String ->
+        viewModel.runLocationSearch(searchTerms)
+        if (viewModel.locations.size == 1) {
+            sharedViewModel.updateSelectedLocation(viewModel.locations.first())
+            navController?.navigate(Screen.LocationDetails.route)
+        }
+    }
+
     val onLocationSelected: (Location) -> Unit = { location ->
         sharedViewModel.updateSelectedLocation(location)
         navController?.navigate("location_details")
     }
 
-
     fun onClickCurrentLocation() {
-            navController?.navigate("current_location")
+        navController?.navigate("current_location")
     }
 
     if (viewModel.errorMessage != null) {
@@ -64,15 +73,18 @@ fun LocationSearchScreen(navController: NavController?) {
         )
     }
 
+    LaunchedEffect(Unit) {
+        viewModel.clearLocations()
+    }
 
-
-
-
+    // ----------------------
+    //   UI
+    // ----------------------
     Column(modifier = Modifier.fillMaxSize()) {
         UserInputBox(
             userInput,
             onValueChange = { userInput = it },
-            onSearch = { searchTerms -> viewModel.runLocationSearch(searchTerms) })
+            onSearch = onSearch)
 
         LocationResultsLazyColumn(
             viewModel.locations,
@@ -94,9 +106,7 @@ fun LocationSearchScreen(navController: NavController?) {
                 .padding(top = 30.dp)
         ) {
             CurrentLocationButton { onClickCurrentLocation() }
-            FindButton {
-                viewModel.runLocationSearch(userInput)
-            }
+            FindButton { onSearch(userInput) }
         }
     }
 }
@@ -140,11 +150,13 @@ fun LocationCard(location: Location, onLocationSelected: (Location) -> Unit) {
 fun formatLocationCardText(location: Location): String {
     val newLine = System.lineSeparator()
     val builder = StringBuilder()
-    builder.append(location.address ?: "Address not found")
-    builder.append(newLine)
+    if (location.address != null) {
+        builder.append(location.address ?: "")
+        builder.append(newLine)
+    }
     builder.append(location.gridRef ?: "Grid reference not found")
-    builder.append(newLine)
-    builder.append(location.town)
+//    builder.append(newLine)
+//    builder.append(location.town)
 
     return builder.toString()
 }
