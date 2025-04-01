@@ -5,13 +5,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.example.mapmissionary.data.Location
 import com.example.mapmissionary.extensions.isGridRef
 import com.example.mapmissionary.interfaces.LocationSearchProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
@@ -33,15 +31,15 @@ class LocationSearchViewModel @Inject constructor(
     }
 
 
-    fun runLocationSearch(searchTerms: String) {
+    suspend fun runLocationSearch(searchTerms: String): Boolean {
         if (searchTerms.isBlank()) {
-            return
+            return false
         }
 
         val searchInProgress = searchJob?.isActive ?: false
         val newSearchTerms = searchTerms != lastSearchTerms
         if (searchInProgress && !newSearchTerms) {
-            return
+            return false
         }
 
         searchJob?.cancel()
@@ -51,15 +49,15 @@ class LocationSearchViewModel @Inject constructor(
         if (searchTerms.isGridRef()) {
             val gridRef = searchTerms.uppercase().replace("\\w", "")
             locations = listOf(Location(gridRef = gridRef))
-            return
+            return true
         }
 
-        searchJob = viewModelScope.launch {
-            try {
-                locations = locationSearchProvider.searchLocationsByKeywords(searchTerms)
-            } catch (e: Exception) {
-                errorMessage = e.toString()
-            }
+        return try {
+            locations = locationSearchProvider.searchLocationsByKeywords(searchTerms)
+            true
+        } catch (e: Exception) {
+            errorMessage = e.toString()
+            false
         }
 
     }

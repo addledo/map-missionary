@@ -26,6 +26,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -43,21 +44,32 @@ import com.example.mapmissionary.navigation.Screen
 import com.example.mapmissionary.shared_composables.InfoDialog
 import com.example.mapmissionary.view_models.LocationSearchViewModel
 import com.example.mapmissionary.view_models.SharedViewModel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
 @Composable
 fun LocationSearchScreen(navController: NavController?) {
     val sharedViewModel = hiltViewModel<SharedViewModel>()
     val viewModel = hiltViewModel<LocationSearchViewModel>()
     var userInput by remember { mutableStateOf("") }
+    val coroutineScope = rememberCoroutineScope()
 
     val onSearch = { searchTerms: String ->
-        viewModel.runLocationSearch(searchTerms)
-        if (viewModel.locations.size == 1) {
-            sharedViewModel.updateSelectedLocation(viewModel.locations.first())
-            navController?.navigate(Screen.LocationDetails.route)
-        }
-        if (viewModel.locations.isEmpty()) {
-            viewModel.errorMessage = "No results found"
+        coroutineScope.launch {
+            val searchCompleted = viewModel.runLocationSearch(searchTerms)
+
+            if (searchCompleted) {
+                if (viewModel.locations.size == 1) {
+                    sharedViewModel.updateSelectedLocation(viewModel.locations.first())
+                    navController?.navigate(Screen.LocationDetails.route)
+                }
+                if (viewModel.locations.isEmpty()) {
+                    viewModel.errorMessage = "No results found"
+                }
+
+            }
+
+
         }
     }
 
@@ -176,7 +188,7 @@ fun formatLocationCardText(location: Location): String {
 fun UserInputBox(
     userInput: String,
     onValueChange: (String) -> Unit,
-    onSearch: (String) -> Unit = {}
+    onSearch: (String) -> Job = {Job()}
 ) {
     val keyboard = LocalSoftwareKeyboardController.current
     TextField(
