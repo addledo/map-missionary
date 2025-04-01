@@ -1,5 +1,6 @@
 package com.example.mapmissionary.views
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,11 +17,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -76,18 +78,19 @@ fun LocationSearchScreen(navController: NavController?) {
         )
     }
 
-    LaunchedEffect(Unit) {
-        viewModel.clearLocations()
-    }
-
     // ----------------------
     //   UI
     // ----------------------
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+    ) {
         UserInputBox(
             userInput,
             onValueChange = { userInput = it },
-            onSearch = onSearch)
+            onSearch = onSearch
+        )
 
         LocationResultsLazyColumn(
             viewModel.locations,
@@ -145,7 +148,10 @@ fun LocationCard(location: Location, onLocationSelected: (Location) -> Unit) {
             text = formatLocationCardText(location),
             fontSize = 18.sp,
             modifier = Modifier
-                .padding(15.dp)
+                .fillMaxWidth()
+                .background(MaterialTheme.colorScheme.surfaceContainer)
+                .padding(15.dp),
+            color = MaterialTheme.colorScheme.onSurface,
         )
     }
 }
@@ -158,8 +164,10 @@ fun formatLocationCardText(location: Location): String {
         builder.append(newLine)
     }
     builder.append(location.gridRef ?: "Grid reference not found")
-//    builder.append(newLine)
-//    builder.append(location.town)
+    if (location.town != null) {
+        builder.append(newLine)
+        builder.append(location.town)
+    }
 
     return builder.toString()
 }
@@ -180,6 +188,15 @@ fun UserInputBox(
             .padding(25.dp)
             .padding(bottom = 10.dp)
             .fillMaxWidth(),
+        colors = OutlinedTextFieldDefaults.colors(
+            unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+            unfocusedTextColor = MaterialTheme.colorScheme.onSecondaryContainer,
+            unfocusedBorderColor = MaterialTheme.colorScheme.primary,
+            focusedContainerColor = MaterialTheme.colorScheme.tertiaryContainer,
+            focusedTextColor = MaterialTheme.colorScheme.onTertiaryContainer,
+            focusedBorderColor = MaterialTheme.colorScheme.primary,
+        ),
+        shape = MaterialTheme.shapes.medium,
         keyboardOptions = KeyboardOptions.Default.copy(
             imeAction = ImeAction.Done
         ),

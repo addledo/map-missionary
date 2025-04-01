@@ -3,6 +3,8 @@ package com.example.mapmissionary.shared_composables
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.CardColors
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,6 +30,7 @@ fun CardTitle(title: String) {
         text = "$title:",
         fontSize = 25.sp,
         fontWeight = FontWeight.Medium,
+        color = MaterialTheme.colorScheme.onBackground,
         modifier = Modifier
             .padding(top = 20.dp)
     )
@@ -40,6 +43,11 @@ fun DetailCard(content: String) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 7.dp),
+        colors = CardColors(
+            MaterialTheme.colorScheme.surfaceContainer, MaterialTheme.colorScheme.onSurface,
+            disabledContainerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+            disabledContentColor = MaterialTheme.colorScheme.onSurface
+        ),
         onClick = { clipboardManager.setText(AnnotatedString(content)) }
     ) {
         Text(
