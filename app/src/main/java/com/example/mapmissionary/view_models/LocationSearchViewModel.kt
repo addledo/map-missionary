@@ -32,26 +32,30 @@ class LocationSearchViewModel @Inject constructor(
     private var searchJob: Job? = null
     private var lastSearchTerms = ""
 
+    private suspend fun runLatLongConversion(searchTerms: String): Boolean {
+        val lat: Double
+        val long: Double
+
+        try {
+            lat = searchTerms.substringBefore(',').toDouble()
+            long = searchTerms.substringAfter(',').toDouble()
+        } catch (_: NumberFormatException) {
+            return false
+        }
+
+        val latLong = LatLong(lat, long)
+        val gridRef = gridRefProvider.getGridFromLatLong(latLong)
+        locations = listOf(Location(latLong = latLong, gridRef = gridRef))
+        return true
+    }
+
     suspend fun runLocationSearch(searchTerms: String): Boolean {
         if (searchTerms.isBlank()) {
             return false
         }
 
         if (searchTerms.isLatLong()) {
-            val lat: Double
-            val long: Double
-
-            try {
-                lat = searchTerms.substringBefore(',').toDouble()
-                long = searchTerms.substringAfter(',').toDouble()
-            } catch (_: NumberFormatException) {
-                return false
-            }
-
-            val latLong = LatLong(lat, long)
-            val gridRef = gridRefProvider.getGridFromLatLong(latLong)
-            locations = listOf(Location(latLong = latLong, gridRef = gridRef))
-            return true
+            return runLatLongConversion(searchTerms)
         }
 
         val searchInProgress = searchJob?.isActive ?: false
