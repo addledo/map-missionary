@@ -10,3 +10,10 @@ fun String.isGridRef(): Boolean {
 
     return this.matches(gridRefRegex)
 }
+
+fun String.isLatLong(): Boolean {
+    // Regex from https://stackoverflow.com/a/18690202
+    val latLongRegex = Regex("^[-+]?([1-8]?\\d(\\.\\d+)?|90(\\.0+)?),\\s*[-+]?(180(\\.0+)?|((1[0-7]\\d)|([1-9]?\\d))(\\.\\d+)?)\$")
+
+    return this.trim().matches(latLongRegex)
+}
