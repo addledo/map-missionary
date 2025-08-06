@@ -108,6 +108,10 @@ fun LocationSearchScreen(navController: NavController?) {
             onSearch = onSearch
         )
 
+        if (viewModel.locations.isEmpty()) {
+            ShowInformation()
+        }
+
         LocationResultsLazyColumn(
             viewModel.locations,
             Modifier
@@ -132,6 +136,51 @@ fun LocationSearchScreen(navController: NavController?) {
     }
 }
 
+
+@Composable
+// TODO Tidy this up a bit!
+fun ShowInformation() {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(30.dp)
+            .padding(top = 50.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            modifier = Modifier
+                .padding(bottom = 10.dp),
+            text = "Map Missionary",
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onBackground
+        )
+        Text(
+            text = "Enter any of the following:",
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onBackground,
+            modifier = Modifier.padding(top = 8.dp)
+        )
+        Text(
+            text = "Location name",
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onBackground,
+            modifier = Modifier.padding(top = 8.dp)
+        )
+        Text(
+            text = "Grid reference",
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onBackground,
+            modifier = Modifier.padding(top = 8.dp)
+        )
+        Text(
+            text = "Latitude/longitude",
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onBackground,
+            modifier = Modifier.padding(top = 8.dp)
+        )
+    }
+}
 
 @Composable
 fun LocationResultsLazyColumn(
@@ -191,14 +240,14 @@ fun formatLocationCardText(location: Location): String {
 fun UserInputBox(
     userInput: String,
     onValueChange: (String) -> Unit,
-    onSearch: (String) -> Job = {Job()}
+    onSearch: (String) -> Job = { Job() }
 ) {
     val keyboard = LocalSoftwareKeyboardController.current
     TextField(
         value = userInput,
         textStyle = TextStyle(fontSize = 20.sp),
         onValueChange = onValueChange,
-        label = { Text("Enter location name or grid ref:") },
+        label = { Text("Search") },
         modifier = Modifier
             .padding(25.dp)
             .padding(bottom = 10.dp)
