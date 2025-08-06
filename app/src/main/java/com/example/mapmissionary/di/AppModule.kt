@@ -9,6 +9,7 @@ import com.example.mapmissionary.interfaces.LocationSearchProvider
 import com.example.mapmissionary.utilities.DeviceLocationHandler
 import com.example.mapmissionary.utilities.GeoDojoService
 import com.example.mapmissionary.utilities.NetworkRepository
+import com.example.mapmissionary.utilities.OsgbConverter
 import com.example.mapmissionary.view_models.SharedViewModel
 import dagger.Module
 import dagger.Provides
@@ -52,14 +53,14 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideGridRefProvider(geoDojoService: GeoDojoService): GridRefProvider {
-        return geoDojoService
+    fun provideGridRefProvider(): GridRefProvider {
+        return OsgbConverter()
     }
 
     @Provides
     @Singleton
-    fun provideLatLongProvider(geoDojoService: GeoDojoService): LatLongProvider {
-        return geoDojoService
+    fun provideLatLongProvider(): LatLongProvider {
+        return OsgbConverter()
     }
 
     @Provides
