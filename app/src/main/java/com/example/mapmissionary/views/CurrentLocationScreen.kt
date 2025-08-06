@@ -6,9 +6,12 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.HorizontalDivider
@@ -63,9 +66,9 @@ fun CurrentLocationScreen() {
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
             .padding(
-                horizontal = 20.dp,
-                vertical = 20.dp
+                WindowInsets.systemBars.asPaddingValues(),
             )
+            .padding(horizontal = 25.dp)
     ) {
         PageTitle("Current Location")
         LocationField("Grid Reference", viewModel.location.gridRef ?: "loading...")

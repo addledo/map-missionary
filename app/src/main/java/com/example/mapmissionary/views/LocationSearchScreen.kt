@@ -4,10 +4,13 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -97,6 +100,7 @@ fun LocationSearchScreen(navController: NavController?) {
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
+            .padding(WindowInsets.systemBars.asPaddingValues())
     ) {
         UserInputBox(
             userInput,
@@ -120,7 +124,6 @@ fun LocationSearchScreen(navController: NavController?) {
             ),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 40.dp)
                 .padding(top = 30.dp)
         ) {
             CurrentLocationButton { onClickCurrentLocation() }
@@ -195,7 +198,7 @@ fun UserInputBox(
         value = userInput,
         textStyle = TextStyle(fontSize = 20.sp),
         onValueChange = onValueChange,
-        label = { Text("Enter location name:") },
+        label = { Text("Enter location name or grid ref:") },
         modifier = Modifier
             .padding(25.dp)
             .padding(bottom = 10.dp)
