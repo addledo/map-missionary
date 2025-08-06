@@ -75,7 +75,6 @@ class CurrentLocationViewModel @Inject constructor(
             Extra.County,
             Extra.PostcodeCenter,
             Extra.PoliceForce,
-            Extra.Country,
         )
 
 
