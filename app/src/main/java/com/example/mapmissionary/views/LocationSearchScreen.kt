@@ -124,7 +124,7 @@ fun LocationSearchScreen(navController: NavController?) {
             ),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 30.dp)
+                .padding(top = 30.dp, bottom = 20.dp)
         ) {
             CurrentLocationButton { onClickCurrentLocation() }
             FindButton { onSearch(userInput) }
