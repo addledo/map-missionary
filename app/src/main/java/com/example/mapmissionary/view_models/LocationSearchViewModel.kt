@@ -1,6 +1,5 @@
 package com.example.mapmissionary.view_models
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -45,7 +44,14 @@ class LocationSearchViewModel @Inject constructor(
         val latLong = LatLong(lat, long)
         val gridRef = gridRefProvider.getGridFromLatLong(latLong)
         locations = listOf(Location(latLong = latLong, gridRef = gridRef))
-        return SearchResult.SUCCESS()
+        return SearchResult.CONVERSION
+    }
+
+    private fun setLocationToGridRef(searchTerms: String) {
+        // Replace consecutive spaces with a single space
+        val gridRef = searchTerms.uppercase().replace(Regex("\\s{2,}"), " ")
+        // Conversion for this takes place in Location Details Screen
+        locations = listOf(Location(gridRef = gridRef))
     }
 
     suspend fun runLocationSearch(searchTerms: String): SearchResult {
@@ -57,6 +63,11 @@ class LocationSearchViewModel @Inject constructor(
             return runLatLongConversion(searchTerms)
         }
 
+        if (searchTerms.isGridRef()) {
+            setLocationToGridRef(searchTerms)
+            return SearchResult.CONVERSION
+        }
+
         val searchInProgress = searchJob?.isActive ?: false
         val newSearchTerms = searchTerms != lastSearchTerms
         if (searchInProgress && !newSearchTerms) {
@@ -66,12 +77,6 @@ class LocationSearchViewModel @Inject constructor(
         searchJob?.cancel()
         lastSearchTerms = searchTerms
 
-        Log.d("GR", "Search terms == gridRef? ${searchTerms.isGridRef()}")
-        if (searchTerms.isGridRef()) {
-            val gridRef = searchTerms.uppercase().replace("\\w", "")
-            locations = listOf(Location(gridRef = gridRef))
-            return SearchResult.SUCCESS()
-        }
 
         return try {
             locations = locationSearchProvider.searchLocationsByKeywords(searchTerms)

@@ -66,11 +66,13 @@ fun LocationSearchScreen(navController: NavController?) {
                     viewModel.errorMessage = "No results found"
                 }
             }
+            else if (searchResult is SearchResult.CONVERSION) {
+                sharedViewModel.updateSelectedLocation(viewModel.locations.first())
+                navController?.navigate("location_details")
+            }
             else if (searchResult is SearchResult.FAIL) {
                 viewModel.errorMessage = searchResult.info
             }
-
-
         }
     }
 
