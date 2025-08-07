@@ -43,7 +43,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.mapmissionary.data.Location
-import com.example.mapmissionary.navigation.Screen
+import com.example.mapmissionary.data.SearchResult
 import com.example.mapmissionary.shared_composables.InfoDialog
 import com.example.mapmissionary.view_models.LocationSearchViewModel
 import com.example.mapmissionary.view_models.SharedViewModel
@@ -59,17 +59,15 @@ fun LocationSearchScreen(navController: NavController?) {
 
     val onSearch = { searchTerms: String ->
         coroutineScope.launch {
-            val searchCompleted = viewModel.runLocationSearch(searchTerms)
+            val searchResult = viewModel.runLocationSearch(searchTerms)
 
-            if (searchCompleted) {
-                if (viewModel.locations.size == 1) {
-                    sharedViewModel.updateSelectedLocation(viewModel.locations.first())
-                    navController?.navigate(Screen.LocationDetails.route)
-                }
+            if (searchResult is SearchResult.SUCCESS) {
                 if (viewModel.locations.isEmpty()) {
                     viewModel.errorMessage = "No results found"
                 }
-
+            }
+            else if (searchResult is SearchResult.FAIL) {
+                viewModel.errorMessage = searchResult.info
             }
 
 

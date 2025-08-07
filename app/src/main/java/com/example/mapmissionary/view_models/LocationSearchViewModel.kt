@@ -7,14 +7,13 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.example.mapmissionary.data.LatLong
 import com.example.mapmissionary.data.Location
+import com.example.mapmissionary.data.SearchResult
 import com.example.mapmissionary.extensions.isGridRef
 import com.example.mapmissionary.extensions.isLatLong
 import com.example.mapmissionary.interfaces.GridRefProvider
 import com.example.mapmissionary.interfaces.LocationSearchProvider
-import com.example.mapmissionary.utilities.OsgbConverter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
-import uk.gov.dstl.geo.osgb.NationalGrid
 import javax.inject.Inject
 
 
@@ -32,7 +31,7 @@ class LocationSearchViewModel @Inject constructor(
     private var searchJob: Job? = null
     private var lastSearchTerms = ""
 
-    private suspend fun runLatLongConversion(searchTerms: String): Boolean {
+    private suspend fun runLatLongConversion(searchTerms: String): SearchResult {
         val lat: Double
         val long: Double
 
@@ -40,18 +39,18 @@ class LocationSearchViewModel @Inject constructor(
             lat = searchTerms.substringBefore(',').toDouble()
             long = searchTerms.substringAfter(',').toDouble()
         } catch (_: NumberFormatException) {
-            return false
+            return SearchResult.FAIL("Incorrect number format entered")
         }
 
         val latLong = LatLong(lat, long)
         val gridRef = gridRefProvider.getGridFromLatLong(latLong)
         locations = listOf(Location(latLong = latLong, gridRef = gridRef))
-        return true
+        return SearchResult.SUCCESS()
     }
 
-    suspend fun runLocationSearch(searchTerms: String): Boolean {
+    suspend fun runLocationSearch(searchTerms: String): SearchResult {
         if (searchTerms.isBlank()) {
-            return false
+            return SearchResult.FAIL("No search terms")
         }
 
         if (searchTerms.isLatLong()) {
@@ -61,7 +60,7 @@ class LocationSearchViewModel @Inject constructor(
         val searchInProgress = searchJob?.isActive ?: false
         val newSearchTerms = searchTerms != lastSearchTerms
         if (searchInProgress && !newSearchTerms) {
-            return false
+            return SearchResult.FAIL("Identical search already in progress")
         }
 
         searchJob?.cancel()
@@ -71,15 +70,15 @@ class LocationSearchViewModel @Inject constructor(
         if (searchTerms.isGridRef()) {
             val gridRef = searchTerms.uppercase().replace("\\w", "")
             locations = listOf(Location(gridRef = gridRef))
-            return true
+            return SearchResult.SUCCESS()
         }
 
         return try {
             locations = locationSearchProvider.searchLocationsByKeywords(searchTerms)
-            true
+            SearchResult.SUCCESS()
         } catch (e: Exception) {
             errorMessage = e.toString()
-            false
+            SearchResult.FAIL(errorMessage ?: "Problem with search provider")
         }
 
     }
