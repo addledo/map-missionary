@@ -15,8 +15,10 @@ class NetworkRepository {
         urlString: String, connectTimeout: Int = 7, readTimeout: Int = 7
     ): String? {
 
+        val secureURL = ensureHTTPS(urlString)
+
         return withContext(Dispatchers.IO) {
-            val url = URL(urlString)
+            val url = URL(secureURL)
             try {
                 val connection = getConnection(url, connectTimeout, readTimeout)
 
@@ -42,6 +44,14 @@ class NetworkRepository {
                 throw Exception("Something went wrong - are you sure you're connected to the internet?")
             }
         }
+    }
+
+    private fun ensureHTTPS(urlString: String): String {
+        val secureURL = urlString.replaceFirst("http://", "https://")
+        if (!secureURL.startsWith("https://")) {
+            throw IllegalArgumentException("Only HTTPS URLs are allowed")
+        }
+        return secureURL
     }
 
     private fun getConnection(url: URL, connectTimeout: Int, readTimeout: Int): HttpURLConnection {
