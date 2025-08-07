@@ -41,7 +41,8 @@ class CurrentLocationViewModel @Inject constructor(
             }
         }.apply { invokeOnCompletion {
             updateGridRef()
-            getExtras()
+            // Disabled to avoid "data sharing" of user location
+//            getExtras()
 
         } }
     }
