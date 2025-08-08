@@ -7,7 +7,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.mapmissionary"
+    namespace = "com.jontypine.mapmissionary"
     compileSdk = 35
 
     defaultConfig {
